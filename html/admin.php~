@@ -1,0 +1,90 @@
+
+<?php
+session_start();
+//echo session_id();
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Hayden Redford</title>
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel = "stylesheet" href="css/stylesheet.css">
+ 
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+<script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script src="js/bootstrap.js"></script>
+</head>
+<body>
+
+
+<?//php include("navbar.php")?>
+
+
+
+
+
+<div id = "page-back">
+
+
+<?php
+if(!isset($_SESSION["gamedesc"]))
+{
+
+  $_SESSION["status"] = "no game";
+}
+else 
+{
+  $_SESSION["status"] = "is a game";
+}
+
+
+ echo "status: " . $_SESSION["status"]
+ ?>
+
+<h3>Add new game</h3>
+
+<form action="addgamequery.php" method="post">
+game name: <input type="text" name="name" />
+game publisher: <input type="text" name="publisher" />
+game collection: <input type="text" name="collection" />
+release date: <input type="date" name="releasedate" />
+number of Players: <input type="text" name="numplayers" />
+Playtime: <input type="text" name="playtime" />
+age rating: <input type="text" name="agerating" />
+description: <input type="text" name="description" />
+image path: <input type="text" name="imagepath" />
+game themes: <input type="text" name="themes" />
+game designer: <input type="text" name="designer" />
+game mechanics: <input type="text" name="mechanics" />
+<input type="submit" id="submitlogin"/>
+</form>
+
+<?php 
+if (isset($_SESSION["gamedesc"]))
+{
+	echo $_SESSION["gamedesc"];
+	//echo "invalid login";
+}
+
+
+
+//if (isset($_SESSION["attempts"]) && $_SESSION["attempts"] > 0)
+//{
+
+//	echo "<br>Invalid login. Please check your username and password and try again.";
+//}
+?>
+
+
+
+
+</div>
+</body>
+</html> 

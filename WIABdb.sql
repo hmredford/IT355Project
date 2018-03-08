@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS custOrderList(
 CREATE TABLE IF NOT EXISTS supplier(
 	supplierID int unsigned NOT NULL AUTO_INCREMENT,
 	name varchar(64) NOT NULL,
-	phone int(11),
+	phone varchar(11),
 	PRIMARY KEY (supplierID)
 );
 
@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS employee(
 	firstName varchar(32) NOT NULL,
 	lastName varchar (32) NOT NULL,
 	hireDate date NOT NULL,
-	phone int(11) unsigned,
+	phone varchar(11) unsigned,
 	email varchar(255) NOT NULL,
 	address varchar(32) NOT NULL,
 	city varchar(32) NOT NULL,
@@ -100,7 +100,7 @@ CREATE TABLE IF NOT EXISTS employee(
 CREATE TABLE IF NOT EXISTS carrier(
 	carrierID int unsigned NOT NULL AUTO_INCREMENT,
 	name varchar(64) NOT NULL,
-	phone int(11),
+	phone varchar(11),
 	PRIMARY KEY(carrierID)
 );
 

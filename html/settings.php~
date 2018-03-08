@@ -1,0 +1,16 @@
+
+<?php
+
+
+$database = "WIAB";
+$table = "game";
+$php_user = "hmredford";
+$php_pass="hR085757";
+
+
+$db_conn = mysqli_connect("localhost",$php_user, $php_pass, $database);
+
+
+
+
+?>

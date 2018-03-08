@@ -1,0 +1,110 @@
+<?php
+
+session_start();
+//echo session_id();
+include("settings.php");
+
+//POST variable
+
+$name = $_POST["name"];
+$publisher = $_POST["publisher"];
+$collection = $_POST["collection"];
+$date = $_POST["date"];
+$numplayers = $_POST["numplayers"];
+$playtime = $_POST["playtime"];
+$agerating = $_POST["agerating"];
+$description = $_POST["description"];
+$imagepath = $_POST["iamgepath"];
+$themes = $_POST["themes"];
+$designer = $_POST["designer"];
+$mechanics = $_POST["mechanics"];
+
+ 
+//$password_hashed = sha1($_POST["fpassword"]);
+
+
+
+// CHECK CONNECTION
+if (!$db_conn){
+  die("Connection Failed: " . mysqli_connect_error() . $php_user);
+   
+}
+
+$open_db = mysqli_select_db($db_conn,$database);
+if (!$open_db){
+  die("Connection Failed: " . mysqli_connect_error() . $php_user);
+   
+}
+
+
+
+// SEND QUERY
+//if (isset($username) && isset($password_hashed)) {
+
+$addgame_query = "INSERT INTO $table (name, publisher, collection, releaseDate, numPlayers, playtime, ageRating, description, imagePath, themes, designer, mechanics)
+VALUES ($name, $publisher, $collection, $releasedate, $numplayers, $playtime, $agerating, $description, $imagepath, $themes, $designer, $mechanics);
+$result = mysqli_query($db_conn, $addgame_query);"
+
+
+	if($result) //IF SOMETHING IS IN THE QUERY
+	{
+
+  
+  	//$value = mysqli_fetch_assoc($result);
+
+	//$_SESSION["gamedes"] = $value["description"];
+	//echo $value['description'];
+	
+		//if(isset($_SESSION["invalid"])){
+		//unset($_SESSION["invalid"]);
+		//}
+	
+	
+	//$_SESSION["loggedin"] = "yes";
+	
+
+	//echo "userid is :" . $_SESSION["userid"];
+	
+	//$set = "UPDATE $table SET logged_in=1 WHERE userId='" . $_SESSION["userid"]. "'";
+	//$result = mysqli_query($db_conn, $setlogin);
+
+	
+	mysqli_close($db_conn);
+
+	echo $result;
+
+	//header("Location: admin.php");
+
+
+  
+	}
+	else {
+
+	mysqli_close($db_conn);
+	
+
+{
+	//$_SESSION["gamename"] = "game not found";
+}
+	
+	//header("Location: admin.php");
+	
+	echo "didnt work";
+	echo " result is: " . $result;
+
+	}
+
+//}
+//else {
+
+	
+//	print_r($_POST);
+//	mysqli_close($db_conn);
+	
+	//$_SESSION["loggedin"] = "invalid";
+//	$_SESSION["attempts"] = $_SESSION["attempts"] + 1;
+	
+//	header("Location: login.php");
+	//echo "variables not set";
+//}
+?>

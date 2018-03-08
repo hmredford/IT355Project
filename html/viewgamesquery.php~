@@ -1,0 +1,47 @@
+<?php
+
+//POST variable
+
+include("settings.php");
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+} 
+
+
+$viewgame_query = "SELECT * FROM game";
+
+$result = $conn->query($viewgame_query);
+<table>
+	<tr>
+		<th>productID</th>
+		<th>name</th>
+		<th>publisher</th>
+		<th>collection</th>
+		<th>releaseDate</th>
+		<th>numPlayers</th>
+		<th>playtime</th>
+		<th>ageRating</th>
+		<th>description</th>
+		<th>imagePath</th>
+		<th>themes</th>
+		<th>designer</th>
+		<th>mechanics</th>
+
+	</tr>
+if ($result->num_rows > 0) {
+    // output data of each row
+    while($row = $result->fetch_assoc()) {
+        echo "<tr><td>". $row["productID"]. " </td><td> " . $row["name"]. " </td><td> " . $row["publisher"] . "</td><td>" . $row["collection"] . "</td><td>" . $row["releaseDate"] . "</td><td>" . $row["numPlayers"] . "</td><td>" . $row["playtime"] . "</td><td>" . $row["ageRating"] . "</td><td>" . $row["description"] . "</td><td>" . $row["imagePath"] . "</td><td>" . $row["themes"] . "</td><td>" . $row["designer"] . "</td><td>" . $row["mechanics"] . "</td></tr>";
+    }
+
+</table>
+
+else {
+    echo "Error: " . $sql . "<br>" . $conn->error;
+}
+
+$conn->close();
+
+?>

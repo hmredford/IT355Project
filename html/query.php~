@@ -1,0 +1,94 @@
+<?php
+
+session_start();
+//echo session_id();
+include("settings.php");
+
+//POST variable
+
+$username = $_POST["fusername"];
+ 
+$password_hashed = sha1($_POST["fpassword"]);
+
+
+
+// CHECK CONNECTION
+if (!$db_conn){
+  die("Connection Failed: " . mysqli_connect_error() . $php_user);
+   
+}
+
+$open_db = mysqli_select_db($db_conn,$database);
+if (!$open_db){
+  die("Connection Failed: " . mysqli_connect_error() . $php_user);
+   
+}
+
+
+
+// SEND QUERY
+//if (isset($username) && isset($password_hashed)) {
+
+$userid_query = "SELECT userId FROM $table WHERE username='" . $username . "' AND password='" . $password_hashed ."' LIMIT 1";
+$result = mysqli_query($db_conn, $userid_query);
+
+
+	if($result) //IF SOMETHING IS IN THE QUERY
+	{
+
+  
+  	$value = mysqli_fetch_assoc($result);
+
+	$_SESSION["userid"] = $value["userId"];
+	
+		//if(isset($_SESSION["invalid"])){
+		//unset($_SESSION["invalid"]);
+		//}
+	
+	
+	//$_SESSION["loggedin"] = "yes";
+	
+
+	//echo "userid is :" . $_SESSION["userid"];
+	
+	$setlogin = "UPDATE $table SET logged_in=1 WHERE userId='" . $_SESSION["userid"]. "'";
+	$result = mysqli_query($db_conn, $setlogin);
+
+	
+	//mysqli_close($db_conn);
+
+	header("Location: contact.php");
+
+
+  
+	}
+	else {
+
+	//mysqli_close($db_conn);
+	
+
+{
+	$_SESSION["invalid"] = "Invalid Login. Please try again";
+}
+	
+	header("Location: login.php");
+	
+	//echo "didnt work";
+	//echo " result is: " . $result;
+
+	}
+
+//}
+//else {
+
+	
+//	print_r($_POST);
+//	mysqli_close($db_conn);
+	
+	//$_SESSION["loggedin"] = "invalid";
+//	$_SESSION["attempts"] = $_SESSION["attempts"] + 1;
+	
+//	header("Location: login.php");
+	//echo "variables not set";
+//}
+?>
