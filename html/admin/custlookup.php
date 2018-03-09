@@ -44,7 +44,8 @@ if (mysqli_num_rows($result) > 0) {
         echo "<td>" . $row["state"]. "</td>";
         echo "<td>" . $row["zip"]. "</td>";
     }
-} else {
+} 
+else {
     echo "0 results";
 }
 
@@ -62,16 +63,25 @@ if (mysqli_num_rows($result) > 0) {
         <th>paymentDate</th>
         <th>customerID</th>
         <th>custOrderList</th>
+        <th>warehouse</th>
+        <th>status</th>
     </tr>
 
 <?php
 
-$orders_sql = "SELECT * FROM custOrder WHERE customerID=(SELECT customerID FROM customer WHERE firstName LIKE'%$firstname%' AND lastName LIKE'%$lastname%')";
+$orders_sql = "SELECT custOrder.custOrder,custOrder.orderDate, custOrder.paymentMethod, custOrder.paymentTotal, 
+custOrder.paymentDate, custOrder.customerID, shipping.warehouseID, shipping.status
+FROM custOrder 
+LEFT JOIN shipping ON shipping.custOrder=custOrder.custOrder
+WHERE custOrder.customerID=(SELECT customerID FROM customer WHERE firstName LIKE'%$firstname%' AND lastName LIKE'%$lastname%')";
+
 $result2 = mysqli_query($conn, $orders_sql);
 
-if (mysqli_num_rows($result2) > 0) {
+if (mysqli_num_rows($result2) > 0) 
+{
     // output data of each row
-    while($row2 = mysqli_fetch_assoc($result2)) {
+    while($row2 = mysqli_fetch_assoc($result2)) 
+    {
         echo "<tr><td>" . $row2["custOrder"] . "</td>";
         echo "<td>" . $row2["orderDate"] . "</td>";
         echo "<td>" . $row2["paymentMethod"] . "</td>";
@@ -84,19 +94,33 @@ if (mysqli_num_rows($result2) > 0) {
         FROM game 
         INNER JOIN custOrderList ON custOrderList.productID=game.productID
         WHERE custOrderList.custOrder= " . $row2['custOrder'];
+        
         $result3 = mysqli_query($conn, $listsql);
 
-        if (mysqli_num_rows($result3) > 0) {
-        // output data of each row
-        while($row3 = mysqli_fetch_assoc($result3)) {
-            echo $row3['quantity'] . " x  " . $row3['name'] . "<br>";
+            if (mysqli_num_rows($result3) > 0) 
+            {
+                // output data of each row
+                while($row3 = mysqli_fetch_assoc($result3)) 
+                {
+                     echo $row3['quantity'] . " x  " . $row3['name'] . "<br>";
+                }
+            } 
+            else 
+            {
+                echo "0 results";
             }
-            echo "</td></tr>";
-         } else {
-    echo "0 results";
-            }   
+            echo "</td>";
+            
+           $warehousesql = "SELECT name FROM warehouse 
+            WHERE warehouseID = '" . $row2["warehouseID"] . "'";
+            $result4 = mysqli_query($conn, $warehousesql);
+            $row4 = mysqli_fetch_assoc($result4);
+            echo "<td>" . $row4["name"] . "</td>";
+            echo "<td>" . $row2["status"] . "</td>";
+
     }
-} else {
+} 
+else {
     echo "0 results";
 }
 ?>
@@ -105,48 +129,15 @@ if (mysqli_num_rows($result2) > 0) {
 
 </div>
 
-<div id = "page-back">
-
-    <form action="addgame.php" method="post">
-    <table>
-    <tr><td><h3>Add New Game</h3></td></tr>
-    <tr><td>game name:</td> <td><input type="text" name="name" /></td></tr>
-    <tr><td>game publisher: </td><td><input type="text" name="publisher" /></td></tr>
-    <tr><td>game collection:</td><td> <input type="text" name="collection" /></td></tr>
-    <tr><td>release date:</td><td> <input type="date" name="releasedate"></td></tr>
-    <tr><td>number of Players:</td><td> <input type="number" name="numplayers" /></td></tr>
-    <tr><td>Playtime: </td><td><input type="number" name="playtime" /></td></tr>
-    <tr><td>age rating: </td><td><input type="text" name="agerating" /></td></tr>
-    <tr><td>description:</td><td> <input type="textarea" name="description"/></td></tr>
-    <tr><td>image path:</td><td> <input type="text" name="imagepath" /></td></tr>
-    <tr><td>game themes:</td><td> <input type="text" name="themes" /></td></tr>
-    <tr><td>game designer: </td><td><input type="text" name="designer" /></td></tr>
-    <tr><td>game mechanics:</td><td> <input type="text" name="mechanics" /></td></tr>
-    </table>
-    <input type="submit" id="submitaddgame"/>
-    </form>
-</div>
-
 <div id="page-back">
-    <h3>Edit Game</h3>
-    <form action="editgame.php" method="post">
+    <h3>Update Customer Info</h3>
+    <form action="editcustomer.php" method="post">
     
-    <select name="selectedGame">
+    <select name = "selection">
         <?php
-        $sql = "SELECT name FROM game";
-        $result = mysqli_query($conn, $sql);
-        while ($row = mysqli_fetch_assoc($result))
-        {
-            echo "<option value=\"" . $row['name'] . "\">" . $row['name'] . "</option>";
-        }
-        ?>
-    </select>
-
-    <select name = "selectedColumn">
-        <?php
-        $sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'game'";
-        $result = mysqli_query($conn, $sql);
-        while ($row = mysqli_fetch_assoc($result))
+        $custcolsql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'customer'";
+        $colresult = mysqli_query($conn, $custcolsql);
+        while ($row = mysqli_fetch_assoc($colresult))
         {
             echo "<option value=\"" . $row['COLUMN_NAME'] . "\">" . $row['COLUMN_NAME'] . "</option>";
         }
@@ -154,11 +145,108 @@ if (mysqli_num_rows($result2) > 0) {
     </select>
 
         Change to: <input type="text" name="changeText" />
-    
-    <input type="submit" id="submitgameedit"/>
+        <input type="hidden" name="firstname" value=<?php echo $firstname; ?> />
+        <input type="hidden" name="lastname" value=<?php echo $lastname; ?> />
+
+    <input type="submit" id="submitcustedit"/>
     </form>
 </div>
 
+<div id = "page-back">
+
+    <form action="addtowarehouse.php" method="post">
+    <table>
+    <tr><td><h3>Assign Order to Warehouse</h3></td></tr>
+    <tr><td>Customer Order number:</td> <td>
+        <select name="order">
+            <?php
+
+            $ordersql2 = "SELECT custOrder from custOrder WHERE customerID=(SELECT customerID FROM customer WHERE firstName LIKE'%$firstname%' AND lastName LIKE'%$lastname%')";
+             $result5 = mysqli_query($conn, $ordersql2);
+            while($row5 = mysqli_fetch_assoc($result5)) 
+            {
+                echo "<option value=\"" . $row5['custOrder'] . "\">" . $row5['custOrder'] . "</option>";
+            }
+            ?>
+        </select>
+    </td></tr>
+    <tr><td>warehouse ID: </td><td>
+        <select name="warehouse">
+            <?php
+            $sql = "SELECT name FROM warehouse";
+            $result = mysqli_query($conn, $sql);
+            while ($row = mysqli_fetch_assoc($result))
+            {
+                echo "<option value=\"" . $row['name'] . "\">" . $row['name'] . "</option>";
+            }
+            ?>
+        </select>
+    </td></tr>
+    </table>
+    <input type="submit" id="submitaddtowarehouse"/>
+    </form>
+</div>
+
+<div id="page-back">
+    <h3>Fulfill Shipment</h3>
+    Only pending orders will be displayed.<br><br>
+    <form action="fulfill.php" method="post">
+    <table>
+    <tr><td>Customer Order number:</td> <td>
+        <select name="order">
+            <?php
+            $ordersql3 = "SELECT custOrder.custOrder from custOrder 
+            INNER JOIN shipping ON custOrder.custOrder = shipping.custOrder
+            WHERE custOrder.customerID=(SELECT customerID FROM customer WHERE firstName LIKE'%$firstname%' AND lastName LIKE'%$lastname%')
+             AND shipping.status LIKE '%ending%'";
+             $result6 = mysqli_query($conn, $ordersql3);
+            while($row6 = mysqli_fetch_assoc($result6)) 
+            {
+                echo "<option value=\"" . $row6['custOrder'] . "\">" . $row6['custOrder'] . "</option>";
+            }
+            ?>
+        </select>
+    </td>
+    <tr><td>Carrier name:</td>
+        <td>
+        <select name="carrier">
+            <?php
+            $carriersql = "SELECT name FROM carrier";
+             $result7 = mysqli_query($conn, $carriersql);
+            while($row7 = mysqli_fetch_assoc($result7)) 
+            {
+                echo "<option value=\"" . $row7['name'] . "\">" . $row7['name'] . "</option>";
+            }
+            ?>
+        </select>
+    </td></tr>
+    </table>
+    <input type="submit" id="fulfillsubmit"/>
+    </form>
+</div>
+
+
+<div id="page-back">
+    <h3>Cancel Shipment</h3>
+    <form action="cancel.php" method="post">
+    <table>
+    <tr><td>Customer Order number:</td> <td>
+        <select name="order">
+            <?php
+            $ordersql4 = "SELECT custOrder FROM custOrder 
+            WHERE customerID=(SELECT customerID FROM customer WHERE firstName LIKE'%$firstname%' AND lastName LIKE'%$lastname%')";
+             $result7 = mysqli_query($conn, $ordersql4);
+            while($row7 = mysqli_fetch_assoc($result7)) 
+            {
+                echo "<option value=\"" . $row7['custOrder'] . "\">" . $row7['custOrder'] . "</option>";
+            }
+            ?>
+        </select>
+    </td> </tr>
+    </table>
+    <input type="submit" id="cancelsubmit"/>
+    </form>
+</div>
 
 <?php 
 mysqli_close($conn);

@@ -91,7 +91,7 @@ if (mysqli_num_rows($result) > 0) {
 </div>
 
 <div id="page-back">
-    <h3>Update Eployee Info</h3>
+    <h3>Update Employee Info</h3>
     <form action="editemployee.php" method="post">
     
     <select name="selectedEmployee">

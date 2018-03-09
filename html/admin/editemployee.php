@@ -14,11 +14,11 @@ echo "<br>change:" . $change;
 
 $finalChange = $change;
 
-$edit_query = "UPDATE employee SET $column = '$change' WHERE employeeID =$eid";
+$edit_query = "UPDATE employee SET $column = '$finalChange' WHERE employeeID =$eid";
 if ($column == "employeeID" || $column == "zip"|| $column == "warehouseID")
 {
-	$finalChange = (int)$finalChange;
-	$edit_query = "UPDATE employee SET $column = $change WHERE employeeID =$eid";
+	$finalChange = (int)$change;
+	$edit_query = "UPDATE employee SET $column = $finalChange WHERE employeeID =$eid";
 }
 
 
