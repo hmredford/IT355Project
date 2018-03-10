@@ -7,12 +7,12 @@ CREATE TABLE IF NOT EXISTS game(
 	numPlayers int(2) unsigned NOT NULL DEFAULT 2,
 	playtime int(3) unsigned DEFAULT 30,
 	ageRating varchar(64) NOT NULL DEFAULT '8+',
-	description mediumtext NOT NULL DEFAULT '',
+	description mediumtext NOT NULL,
 	imagePath varchar(128) NOT NULL DEFAULT '',
 	themes varchar(128) NOT NULL DEFAULT '',
 	designer varchar(128) NOT NULL DEFAULT '',
 	mechanics varchar(255) NOT NULL DEFAULT '',
-	price decimal NOT NULL DEFAULT 5.0;
+	price decimal NOT NULL DEFAULT 5.0,
 	PRIMARY KEY (productID)
 );
 
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS review(
 	reviewID int unsigned NOT NULL AUTO_INCREMENT,
 	rating decimal(2,1) NOT NULL DEFAULT 3.0,
 	reviewDate timestamp NOT NULL,
-	comment mediumtext NOT NULL DEFAULT '',
+	comment mediumtext NOT NULL,
 	customerID int unsigned,
 	productID int unsigned,
 	PRIMARY KEY (reviewID),
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS employee(
 	firstName varchar(32) NOT NULL,
 	lastName varchar (32) NOT NULL,
 	hireDate date NOT NULL,
-	phone varchar(11) unsigned,
+	phone int unsigned,
 	email varchar(255) NOT NULL,
 	address varchar(32) NOT NULL,
 	city varchar(32) NOT NULL,
