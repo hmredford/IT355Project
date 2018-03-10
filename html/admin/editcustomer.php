@@ -2,28 +2,39 @@
 	<tr><td><a href="admin.php"> Admin Home </a></td><td><a href="../logout.php"> log out </a></td></tr>
 </table></div>
 <?php
+include "settings.php";
+//VERIFY LOGIN
 session_start();
-//echo session_id();
+
+function redirect($url) {
+    ob_start();
+    header('Location: '.$url);
+    ob_end_flush();
+    die();
+}
 
 if(!isset($_SESSION["userid"]))
 {
   $_SESSION["invalid"] = "Invalid Login. Please try again";
 
-	header("Location: ../login.php");
+    redirect("../login.php");
 }
 
-include("settings.php");
+//VERIFY INPUTS
+
+if(!isset($_POST["selection"]) ||
+!isset($_POST["firstname"]) || 
+!isset($_POST["lastname"])||
+!isset($_POST["changeText"]))
+{
+    redirect("error.php");
+}
+//VALIDATE INPUTS
 
 $column = $_POST["selection"];
 $fn = $_POST["firstname"];
 $ln = $_POST["lastname"];
 $change = $_POST["changeText"];
-
-echo "sel:". $column;
-echo "<br>first: " . $fn;
-echo "<br>last: " . $ln;
-echo "<br>change:" . $change;
-
 
 $finalChange = $change;
 
@@ -32,6 +43,11 @@ if ($column == "customerID" || $column == "zip")
 {
 	$finalChange = (int)$change;
 	$edit_query2 = "UPDATE customer SET $column = $finalChange WHERE firstName LIKE '%$fn%' AND lastName Like '%$ln%'";
+}
+else
+{
+	$finalChange = filter_var($change, FILTER_SANITIZE_STRING);
+	$finalChange = htmlentities($finalChange);
 }
 
 // Check connection
@@ -49,4 +65,5 @@ if ($result) {
 
 mysqli_close($conn);
 
+redirect("custlookup.php");
 ?>

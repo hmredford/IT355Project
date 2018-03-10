@@ -2,22 +2,33 @@
 	<tr><td><a href="admin.php"> Admin Home </a></td><td><a href="../logout.php"> log out </a></td></tr>
 </table></div>
 <?php
+include "settings.php";
+//VERIFY LOGIN
 session_start();
-//echo session_id();
+
+function redirect($url) {
+    ob_start();
+    header('Location: '.$url);
+    ob_end_flush();
+    die();
+}
 
 if(!isset($_SESSION["userid"]))
 {
   $_SESSION["invalid"] = "Invalid Login. Please try again";
 
-	header("Location: ../login.php");
+    redirect("../login.php");
 }
-//POST variable
 
-include("settings.php");
+//VERIFY INPUTS
+
+if(!isset($_POST["order"]))
+{
+    redirect("error.php");
+}
+//VALIDATE INPUTS
 
 $orderid = $_POST["order"];
-
-echo "<br>order: " . $orderid;
 
 
 $fulfill1 = "UPDATE shipping SET status='canceled' WHERE custOrder=$orderid";
@@ -30,11 +41,12 @@ $result1 = mysqli_query($conn, $fulfill1);
 
 
 if ($result1) {
-    echo "Record changed successfully";
+    //echo "Record changed successfully";
 } else {
     echo "Error: " . $sql . "<br>" . $conn->error;
 }
 
 mysqli_close($conn);
+redirect("admin.php");
 
 ?>

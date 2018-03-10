@@ -14,7 +14,7 @@
 		<th>playtime</th>
 		<th>ageRating</th>
 		<th>description</th>
-		<th>imagePath</th>
+		
 		<th>themes</th>
 		<th>designer</th>
 		<th>mechanics</th>
@@ -56,7 +56,7 @@ if (mysqli_num_rows($result) > 0) {
         echo "<td>" . $row["playtime"] . "</td>";
         echo "<td>" . $row["ageRating"]. "</td>";
         echo "<td>" . $row["description"]. "</td>";
-        echo "<td>" . $row["imagePath"]. "</td>";
+
         echo "<td>" . $row["themes"]. "</td>";
         echo "<td>" . $row["designer"]. "</td>";
         echo "<td>" . $row["mechanics"] . "</td>";
@@ -77,11 +77,11 @@ if (mysqli_num_rows($result) > 0) {
     
     <select name="selectedGame">
         <?php
-        $sql = "SELECT name FROM game";
+        $sql = "SELECT name, productID FROM game";
         $result = mysqli_query($conn, $sql);
         while ($row = mysqli_fetch_assoc($result))
         {
-            echo "<option value=\"" . $row['name'] . "\">" . $row['name'] . "</option>";
+            echo "<option value=\"" . $row['productID'] . "\">" . $row['name'] . "</option>";
         }
         ?>
     </select>
@@ -116,11 +116,11 @@ if (mysqli_num_rows($result) > 0) {
     <tr><td>Playtime: </td><td><input type="number" name="playtime" /></td></tr>
     <tr><td>age rating: </td><td><input type="text" name="agerating" /></td></tr>
     <tr><td>description:</td><td> <input type="textarea" name="description"/></td></tr>
-    <tr><td>image path:</td><td> <input type="text" name="imagepath" /></td></tr>
+    
     <tr><td>game themes:</td><td> <input type="text" name="themes" /></td></tr>
     <tr><td>game designer: </td><td><input type="text" name="designer" /></td></tr>
     <tr><td>game mechanics:</td><td> <input type="text" name="mechanics" /></td></tr>
-    <tr><td>price:</td><td> <input type="number" name="price" /></td></tr>
+    <tr><td>price:</td><td> <input type="text" name="price" /></td></tr>
     </table>
     <input type="submit" id="submitaddgame"/>
     </form>

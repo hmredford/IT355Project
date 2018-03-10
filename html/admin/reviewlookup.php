@@ -16,14 +16,29 @@
 
 
 <?php
+include "settings.php";
+//VERIFY LOGIN
 session_start();
-//echo session_id();
+
+function redirect($url) {
+    ob_start();
+    header('Location: '.$url);
+    ob_end_flush();
+    die();
+}
 
 if(!isset($_SESSION["userid"]))
 {
   $_SESSION["invalid"] = "Invalid Login. Please try again";
 
-    header("Location: ../login.php");
+    redirect("../login.php");
+}
+
+//VERIFY INPUTS
+
+if(!isset($_POST["reviewgame"]))
+{
+    redirect("error.php");
 }
 
 $gameName = $_POST["reviewgame"];

@@ -2,23 +2,35 @@
 	<tr><td><a href="admin.php"> Admin Home </a></td><td><a href="../logout.php"> log out </a></td></tr>
 </table></div>
 <?php
+include "settings.php";
+//VERIFY LOGIN
 session_start();
-//echo session_id();
+
+function redirect($url) {
+    ob_start();
+    header('Location: '.$url);
+    ob_end_flush();
+    die();
+}
 
 if(!isset($_SESSION["userid"]))
 {
   $_SESSION["invalid"] = "Invalid Login. Please try again";
 
-	header("Location: ../login.php");
+    redirect("../login.php");
 }
-//POST variable
 
-include("settings.php");
+//VERIFY INPUTS
+
+if(!isset($_POST["order"]) ||
+!isset($_POST["wid"]))
+{
+    redirect("error.php");
+}
 
 $order = $_POST["order"];
 $wid = $_POST["wid"];
 
-echo "order: " . $order;
 
 
 $fulfill = "UPDATE receiving SET status='received'
@@ -32,7 +44,6 @@ $result = mysqli_query($conn, $fulfill);
 
 
 if ($result) {
-    echo "Record changed successfully";
 } else {
     echo "Error: " . $sql . "<br>" . $conn->error;
 }
@@ -46,7 +57,6 @@ while ($row=mysqli_fetch_assoc($result2))
 	" WHERE warehouseID=$wid AND productID=" . $row["productID"];
 	$result2 = mysqli_query($conn, $update);
 	if ($result2) {
-    echo "Record changed successfully";
 	} else {
     	echo "Error: " . $sql . "<br>" . $conn->error;
 	}
@@ -54,4 +64,5 @@ while ($row=mysqli_fetch_assoc($result2))
 
 mysqli_close($conn);
 
+redirect("admin.php");
 ?>

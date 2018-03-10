@@ -18,23 +18,45 @@
 
 
 <?php
+include "settings.php";
+//VERIFY LOGIN
 session_start();
-//echo session_id();
+
+function redirect($url) {
+    ob_start();
+    header('Location: '.$url);
+    ob_end_flush();
+    die();
+}
 
 if(!isset($_SESSION["userid"]))
 {
   $_SESSION["invalid"] = "Invalid Login. Please try again";
 
-    header("Location: ../login.php");
+    redirect("../login.php");
 }
+
+//VERIFY INPUTS
+
+if(!isset($_POST["firstname"]) ||
+!isset($_POST["lastname"]))
+{
+    redirect("error.php");
+}
+//VALIDATE INPUTS
 
 $firstname = $_POST["firstname"];
 $lastname = $_POST["lastname"];
 
+$firstname = filter_var($firstname, FILTER_SANITIZE_STRING);
+$firstname = htmlentities($firstname);
+
+$lastname = filter_var($lastname, FILTER_SANITIZE_STRING);
+$lastname = htmlentities($lastname);
+
+
 echo "<br>" . $firstname;
 echo "<br>" . $lastname;
-
-include("settings.php");
 
 // Check connection
 if (!$conn) {

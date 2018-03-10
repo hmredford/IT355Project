@@ -11,31 +11,36 @@
 
 
 <?php
+include "settings.php";
+//VERIFY LOGIN
 session_start();
-//echo session_id();
+
+function redirect($url) {
+    ob_start();
+    header('Location: '.$url);
+    ob_end_flush();
+    die();
+}
 
 if(!isset($_SESSION["userid"]))
 {
   $_SESSION["invalid"] = "Invalid Login. Please try again";
 
-    header("Location: ../login.php");
+    redirect("../login.php");
 }
+
+//VERIFY INPUTS
+
+if(!isset($_POST["wid"]))
+{
+    redirect("error.php");
+}
+//VALIDATE INPUTS
 
 $wid = $_POST["wid"];
 
-echo "<br>Warehouse ID:" . $wid;
 
 
-include("settings.php");
-session_start();
-//echo session_id();
-
-if(!isset($_SESSION["userid"]))
-{
-  $_SESSION["invalid"] = "Invalid Login. Please try again";
-
-    header("Location: ../login.php");
-}
 // Check connection
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
@@ -80,7 +85,7 @@ else {
     </select></td></tr>
     <tr><td>quantity:</td> <td><input type="number" name="quantity" /></td></tr>
     <tr><td>payment method: </td><td><input type="text" name="method" /></td></tr>
-    <tr><td>employeeID:</td><td> <input type="text" name="eid" /></td></tr>
+    <tr><td>employeeID:</td><td> <input type="number" name="eid" /></td></tr>
     <tr><td>supplier:</td><td><select name="sid">
     <?php
     $sql3 ="SELECT name, supplierID FROM supplier";

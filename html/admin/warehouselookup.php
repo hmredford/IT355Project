@@ -15,20 +15,33 @@
 
 
 <?php
+
+include "settings.php";
+//VERIFY LOGIN
 session_start();
-//echo session_id();
+
+function redirect($url) {
+    ob_start();
+    header('Location: '.$url);
+    ob_end_flush();
+    die();
+}//echo session_id();
+
 
 if(!isset($_SESSION["userid"]))
 {
   $_SESSION["invalid"] = "Invalid Login. Please try again";
 
-    header("Location: ../login.php");
+    redirect("../login.php");
 }
 
-//VALIDATE INPUT
-if (!isset($_POST["wid"]){
-    header("error.php");
+//VERIFY INPUTS
+
+if(!isset($_POST["wid"]))
+{
+    redirect("error.php");
 }
+
  
 $wid = $_POST["wid"];
 
@@ -36,7 +49,7 @@ $wid = $_POST["wid"];
 echo "<br>Warehouse ID:" . $wid;
 
 
-include("settings.php");
+
 
 // Check connection
 if (!$conn) {
@@ -221,10 +234,17 @@ else {
 <div id="page-back">
     <br>
     <h3>Verify Order Shipped</h3>
+    You can only ship an order if you have enough of the product in inventory.
     <form action="verifyshipment.php" method="post">
     Order:<select name="order">
     <?php
-
+    $sql5 = "SELECT DISTINCT shipping.custOrder
+        FROM shipping
+        LEFT JOIN custOrderList ON custOrderList.custOrder=shipping.custOrder
+        LEFT JOIN inventory ON custOrderList.productID=inventory.productID
+        WHERE shipping.warehouseID=$wid 
+        AND inventory.quantity > custOrderList.quantity
+        AND shipping.status LIKE'%ending%'";
     $result7 = mysqli_query($conn, $sql5);
     while ($row7 = mysqli_fetch_assoc($result7))
     {
