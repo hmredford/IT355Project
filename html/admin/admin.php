@@ -1,19 +1,14 @@
+
 <?php
 
 /*
 TODO: 
-Warehouse
-	Add warehouse
-	See Merch Orders
-		Cancel order
-	See Recieving
-		Verify recieved
-	See Shipping
-		Verify fulfillment
-		Cancel Order
-See Reviews
-	Remove review
 
+	Inventory
+		Cancel Order
+
+	
+	
 Add Login
 	Navbar
 	Cookies
@@ -22,8 +17,21 @@ Add Login
 Sanitize inputs (Security)
 */
 
-include "admin/settings.php";
+include "settings.php";
+
+session_start();
+//echo session_id();
+
+if(!isset($_SESSION["userid"]))
+{
+  $_SESSION["invalid"] = "Invalid Login. Please try again";
+
+	header("Location: ../login.php");
+}
 ?>
+
+
+
 
 
 <!DOCTYPE html>
@@ -35,11 +43,12 @@ include "admin/settings.php";
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-
-
+<div><table>
+	<tr><td><a href="admin.php"> Admin Home </a></td><td><a href="../logout.php"> log out </a></td></tr>
+</table></div>
 <div id = "page-back">
-	<h3>Lookup Games</h3>
-	<form action="admin/viewgames.php" method="post">
+	<h3>Manage Games</h3>
+	<form action="viewgames.php" method="post">
 	<input type="submit" id="submitaddgame"/>
 	</form>
 </div>
@@ -47,8 +56,8 @@ include "admin/settings.php";
 
 
 <div id="page-back">
-	<h3>Lookup Employees</h3>
-	<form action="admin/viewemployees.php">
+	<h3>Manage Employees</h3>
+	<form action="viewemployees.php" method="post">
 	<select name="warehouse">
 	<?php
 	$sql = "SELECT name FROM warehouse";
@@ -66,22 +75,22 @@ include "admin/settings.php";
 
 
 <div id = "page-back">
-	<h3>Lookup Customer and Orders</h3>
-	<form action="admin/custlookup.php" method="post">
+	<h3>Manage Customers Orders and Info</h3>
+	<form action="custlookup.php" method="post">
 	<table>
 	<tr><td>Firstname:</td> <td><input type="text" name="firstname" /></td></tr>
 	<tr><td>Lastname: </td><td><input type="text" name="lastname" /></td></tr>
 	</table>
 	<input type="submit" id="submitcustlookup"/>
 	</form>
-	<br>Hint: try Tessy Tester
+	<br>Hint: try 'Tessy Tester'
 </div>
 
 
 <div id = "page-back">
-	<h3>Lookup Reviews</h3>
-	<form action="admin/reviewlookup.php">
-	<select>
+	<h3>Manage Reviews</h3>
+	<form action="reviewlookup.php" method="post">
+	<select name="reviewgame">
 	<?php
 	$sql = "SELECT name FROM game";
 	$result = mysqli_query($conn, $sql);
@@ -97,15 +106,32 @@ include "admin/settings.php";
 
 
 <div id = "page-back">
-	<h3>Lookup Warehouse</h3>
-	<form action="admin/viewinventory.php">
-	<select name="games">
+	<h3>Manage Shipments</h3>
+	<form action="warehouselookup.php" method="post">
+	<select name="wid">
 	<?php
-	$sql = "SELECT name FROM warehouse";
+	$sql = "SELECT name, warehouseID FROM warehouse";
 	$result = mysqli_query($conn, $sql);
 	while ($row = mysqli_fetch_assoc($result))
 	{
-		echo "<option value=\"" . $row['name'] . "\">" . $row['name'] . "</option>";
+		echo "<option value=\"" . $row['warehouseID'] . "\">" . $row['name'] . "</option>";
+	}
+	?>
+	</select>
+	<input type="submit" id="submitwarehouse"/>
+	</form>
+</div>
+
+<div id = "page-back">
+	<h3>Manage Inventory</h3>
+	<form action="inventorylookup.php" method="post">
+	<select name="wid">
+	<?php
+	$sql = "SELECT name, warehouseID FROM warehouse";
+	$result = mysqli_query($conn, $sql);
+	while ($row = mysqli_fetch_assoc($result))
+	{
+		echo "<option value=\"" . $row['warehouseID'] . "\">" . $row['name'] . "</option>";
 	}
 	?>
 	</select>
@@ -113,23 +139,6 @@ include "admin/settings.php";
 	</form>
 </div>
 
-
-<div id = "page-back">
-	<h3>Add New Warehouse</h3>
-	<form action="admin/addwarehousequery.php" method="post">
-	<table>
-	<tr><td>name:</td> <td><input type="text" name="name" /></td></tr>
-	<tr><td>address: </td><td><input type="text" name="address" /></td></tr>
-	<tr><td>city:</td><td> <input type="text" name="text" /></td></tr>
-	<tr><td>state:</td><td> <input type="text" name="state" /></td></tr>
-	<tr><td>zip: </td><td><input type="number" name="zip" /></td></tr>
-	<tr><td>manager first name: </td><td><input type="text" name="mfirst" /></td></tr>
-	<tr><td>manager last name: </td><td><input type="text" name="mlast" /></td></tr>
-	</table>
-	<input type="submit" id="submitaddwarehouse"/>
-	</form>
-
-</div>
 
 
 </body>

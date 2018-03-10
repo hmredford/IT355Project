@@ -15,14 +15,14 @@ if(!isset($_SESSION["userid"]))
 
 include("settings.php");
 
-$orderid = $_POST["order"];
-$warehouse = $_POST["warehouse"];
+$oid = $_POST["order"];
+$wid = $_POST["warehouse"];
 
-echo "<br>orderid: " . $orderid;
-echo "<br>warehouse:" . $warehouse;
+echo "<br>orderid: " . $oid;
+echo "<br>warehouse:" . $wid;
 
-$add_query = "INSERT INTO shipping (custOrder, warehouseID, status)
-VALUES ($orderid, (SELECT warehouseID FROM warehouse WHERE name='$warehouse'), 'pending')";
+$add_query = "INSERT INTO receiving (merchOrder, warehouseID, status)
+VALUES ($oid, $wid, 'pending')";
 
 
 if (!$conn) {

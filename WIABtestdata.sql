@@ -1,8 +1,8 @@
 INSERT INTO game(name, publisher, collection, releaseDate, numPlayers, 
-	playtime, ageRating, description, imagePath, themes, designer, mechanics)
+	playtime, ageRating, description, imagePath, themes, designer, mechanics, price)
 	VALUES('testgame', 'me','mine','2017-04-02', 4, 20, '0+', 
 	'This is a test game. It has no rules. It isnt any fun. But it is here and it is useful. Thanks for looking at testgame.' 
-	,'/images/testgame.jpg', 'testing','me', 'none');
+	,'/images/testgame.jpg', 'testing','me', 'none', 10.00);
 
 
 INSERT INTO customer(username, password, firstName,lastName,
@@ -12,7 +12,7 @@ VALUES('testuser','','Tessy','Tester','tester@test.com',
 
 
 INSERT INTO review(rating ,reviewDate,comment,customerID,productID)
-VALUES ('3.0', CURRENT_TIMESTAMP, 'This game is barely testable.', 
+VALUES (3.0, CURRENT_TIMESTAMP, 'This game is barely testable.', 
 	(SELECT customerID from customer WHERE username="testuser"),
 	(SELECT productID FROM game WHERE name="testgame"));
 	
@@ -42,8 +42,8 @@ INSERT INTO carrier(name, phone)
 VALUES ('testEX', 18015550001);
 
 INSERT INTO merchOrder(
-	orderDate,paymentMethod,paymentTotal,Payment_Date,employeeID)
-	VALUES(CURRENT_TIMESTAMP, 'TEST ACCOUNT', '0.00', CURRENT_TIMESTAMP, 1);
+	orderDate,paymentMethod,paymentTotal,PaymentDate,employeeID, supplierID)
+	VALUES(CURRENT_TIMESTAMP, 'TEST ACCOUNT', 0.00, CURRENT_TIMESTAMP, 1,1);
 
 INSERT INTO merchOrderList(merchOrder,productID, quantity)
 VALUES(1,1,2);
@@ -57,3 +57,6 @@ VALUES(1,1,1,"Pending");
 
 INSERT INTO inventory(productID,warehouseID,quantity)
 VALUES(1,1,5);
+
+INSERT INTO users(username, password)
+VALUES('admin',SHA2('bannanatoast',256));

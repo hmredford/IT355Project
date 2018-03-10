@@ -1,25 +1,36 @@
+
 <?php
 
-//POST variable
+session_start();
+//echo session_id();
+
+if(!isset($_SESSION["userid"]))
+{
+  $_SESSION["invalid"] = "Invalid Login. Please try again";
+
+	header("Location: ../login.php");
+}
 
 include("settings.php");
 
 $gameName = $_POST["selectedGame"];
 $column = $_POST["selectedColumn"];
-$change = $_POST["changeText"];
-
-echo "game name:". $gameName;
-echo "<br>column: " . $column;
-echo "<br>change:" . $change;
+$change = clean_input($_POST["changeText"]);
 
 $finalChange = $change;
 $editgame_query = "UPDATE game SET $column = '$finalChange' WHERE name = '$gameName'";
 
-if ($column == "productID" || $column == "numplayers" || $column == "playtime")
+if ($column == "productID" || $column == "numplayers" || $column == "playtime" )
 {
 	$finalChange = (int)$finalChange;
 	$editgame_query = "UPDATE game SET $column = $finalChange WHERE name = '$gameName'";
 }
+if ($column == "productID")
+{
+	$finalChange = floatval($finalChange);
+	$editgame_query = "UPDATE game SET $column = $finalChange WHERE name = '$gameName'";
+}
+
 
 
 // Check connection
@@ -38,4 +49,5 @@ if ($result) {
 
 mysqli_close($conn);
 
+header("viewgames.php");
 ?>

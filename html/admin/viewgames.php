@@ -1,3 +1,6 @@
+<div><table>
+    <tr><td><a href="admin.php"> Admin Home </a></td><td><a href="../logout.php"> log out </a></td></tr>
+</table></div>
 <div>
 
 <table>
@@ -15,11 +18,22 @@
 		<th>themes</th>
 		<th>designer</th>
 		<th>mechanics</th>
+        <th>price</th>
 
 	</tr>
 
 
 <?php
+
+session_start();
+//echo session_id();
+
+if(!isset($_SESSION["userid"]))
+{
+  $_SESSION["invalid"] = "Invalid Login. Please try again";
+
+    header("Location: ../login.php");
+}
 include("settings.php");
 
 // Check connection
@@ -45,36 +59,17 @@ if (mysqli_num_rows($result) > 0) {
         echo "<td>" . $row["imagePath"]. "</td>";
         echo "<td>" . $row["themes"]. "</td>";
         echo "<td>" . $row["designer"]. "</td>";
-        echo "<td>" . $row["mechanics"] . "</td></tr>";
+        echo "<td>" . $row["mechanics"] . "</td>";
+        echo "<td>" . $row["price"] . "</td></tr>";
     }
 } else {
     echo "0 results";
 }
 ?>
-
+</table>
 </div>
 
-<div id = "page-back">
 
-    <form action="addgame.php" method="post">
-    <table>
-    <tr><td><h3>Add New Game</h3></td></tr>
-    <tr><td>game name:</td> <td><input type="text" name="name" /></td></tr>
-    <tr><td>game publisher: </td><td><input type="text" name="publisher" /></td></tr>
-    <tr><td>game collection:</td><td> <input type="text" name="collection" /></td></tr>
-    <tr><td>release date:</td><td> <input type="date" name="releasedate"></td></tr>
-    <tr><td>number of Players:</td><td> <input type="number" name="numplayers" /></td></tr>
-    <tr><td>Playtime: </td><td><input type="number" name="playtime" /></td></tr>
-    <tr><td>age rating: </td><td><input type="text" name="agerating" /></td></tr>
-    <tr><td>description:</td><td> <input type="textarea" name="description"/></td></tr>
-    <tr><td>image path:</td><td> <input type="text" name="imagepath" /></td></tr>
-    <tr><td>game themes:</td><td> <input type="text" name="themes" /></td></tr>
-    <tr><td>game designer: </td><td><input type="text" name="designer" /></td></tr>
-    <tr><td>game mechanics:</td><td> <input type="text" name="mechanics" /></td></tr>
-    </table>
-    <input type="submit" id="submitaddgame"/>
-    </form>
-</div>
 
 <div id="page-back">
     <h3>Edit Game</h3>
@@ -108,7 +103,28 @@ if (mysqli_num_rows($result) > 0) {
     </form>
 </div>
 
+<div id = "page-back">
 
+    <form action="addgame.php" method="post">
+    <table>
+    <tr><td><h3>Add New Game</h3></td></tr>
+    <tr><td>game name:</td> <td><input type="text" name="name" /></td></tr>
+    <tr><td>game publisher: </td><td><input type="text" name="publisher" /></td></tr>
+    <tr><td>game collection:</td><td> <input type="text" name="collection" /></td></tr>
+    <tr><td>release date:</td><td> <input type="date" name="releasedate"></td></tr>
+    <tr><td>number of Players:</td><td> <input type="number" name="numplayers" /></td></tr>
+    <tr><td>Playtime: </td><td><input type="number" name="playtime" /></td></tr>
+    <tr><td>age rating: </td><td><input type="text" name="agerating" /></td></tr>
+    <tr><td>description:</td><td> <input type="textarea" name="description"/></td></tr>
+    <tr><td>image path:</td><td> <input type="text" name="imagepath" /></td></tr>
+    <tr><td>game themes:</td><td> <input type="text" name="themes" /></td></tr>
+    <tr><td>game designer: </td><td><input type="text" name="designer" /></td></tr>
+    <tr><td>game mechanics:</td><td> <input type="text" name="mechanics" /></td></tr>
+    <tr><td>price:</td><td> <input type="number" name="price" /></td></tr>
+    </table>
+    <input type="submit" id="submitaddgame"/>
+    </form>
+</div>
 <?php 
 mysqli_close($conn);
 ?>

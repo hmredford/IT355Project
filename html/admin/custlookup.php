@@ -1,3 +1,6 @@
+<div><table>
+    <tr><td><a href="admin.php"> Admin Home </a></td><td><a href="../logout.php"> log out </a></td></tr>
+</table></div>
 <div>
 
 <table>
@@ -15,6 +18,16 @@
 
 
 <?php
+session_start();
+//echo session_id();
+
+if(!isset($_SESSION["userid"]))
+{
+  $_SESSION["invalid"] = "Invalid Login. Please try again";
+
+    header("Location: ../login.php");
+}
+
 $firstname = $_POST["firstname"];
 $lastname = $_POST["lastname"];
 
@@ -69,7 +82,7 @@ else {
 
 <?php
 
-$orders_sql = "SELECT custOrder.custOrder,custOrder.orderDate, custOrder.paymentMethod, custOrder.paymentTotal, 
+$orders_sql = "SELECT DISTINCT custOrder.custOrder,custOrder.orderDate, custOrder.paymentMethod, custOrder.paymentTotal, 
 custOrder.paymentDate, custOrder.customerID, shipping.warehouseID, shipping.status
 FROM custOrder 
 LEFT JOIN shipping ON shipping.custOrder=custOrder.custOrder
@@ -102,7 +115,7 @@ if (mysqli_num_rows($result2) > 0)
                 // output data of each row
                 while($row3 = mysqli_fetch_assoc($result3)) 
                 {
-                     echo $row3['quantity'] . " x  " . $row3['name'] . "<br>";
+                     echo $row3['name'] . " x  " . $row3['quantity'] . "<br>";
                 }
             } 
             else 
@@ -188,45 +201,6 @@ else {
 </div>
 
 <div id="page-back">
-    <h3>Fulfill Shipment</h3>
-    Only pending orders will be displayed.<br><br>
-    <form action="fulfill.php" method="post">
-    <table>
-    <tr><td>Customer Order number:</td> <td>
-        <select name="order">
-            <?php
-            $ordersql3 = "SELECT custOrder.custOrder from custOrder 
-            INNER JOIN shipping ON custOrder.custOrder = shipping.custOrder
-            WHERE custOrder.customerID=(SELECT customerID FROM customer WHERE firstName LIKE'%$firstname%' AND lastName LIKE'%$lastname%')
-             AND shipping.status LIKE '%ending%'";
-             $result6 = mysqli_query($conn, $ordersql3);
-            while($row6 = mysqli_fetch_assoc($result6)) 
-            {
-                echo "<option value=\"" . $row6['custOrder'] . "\">" . $row6['custOrder'] . "</option>";
-            }
-            ?>
-        </select>
-    </td>
-    <tr><td>Carrier name:</td>
-        <td>
-        <select name="carrier">
-            <?php
-            $carriersql = "SELECT name FROM carrier";
-             $result7 = mysqli_query($conn, $carriersql);
-            while($row7 = mysqli_fetch_assoc($result7)) 
-            {
-                echo "<option value=\"" . $row7['name'] . "\">" . $row7['name'] . "</option>";
-            }
-            ?>
-        </select>
-    </td></tr>
-    </table>
-    <input type="submit" id="fulfillsubmit"/>
-    </form>
-</div>
-
-
-<div id="page-back">
     <h3>Cancel Shipment</h3>
     <form action="cancel.php" method="post">
     <table>
@@ -246,6 +220,30 @@ else {
     </table>
     <input type="submit" id="cancelsubmit"/>
     </form>
+</div>
+
+<div id = "page-back">
+    <br>
+    <form action="placecustorder.php" method="post">
+    <table>
+    <tr><td colspan='2'><h3>Place Order</h3></td></tr>
+    <tr><td>product:</td><td><select name="pid">
+    <?php
+    $sql2 ="SELECT name, productID FROM game";
+    $result2 = mysqli_query($conn, $sql2);
+    while ($row2 = mysqli_fetch_assoc($result2))
+    {
+        echo "<option value=\"" . $row2["productID"] . "\">" . $row2["name"] . "</option>";
+    }
+    ?>
+    </select></td></tr>
+    <tr><td>quantity:</td> <td><input type="number" name="quantity" /></td></tr>
+    </table>
+    <input type="hidden" value="<?php echo $firstname;?>" name="fn"/>
+    <input type="hidden" value="<?php echo $lastname;?>" name="ln"/>
+    <input type="submit" id="submitcustorder"/>
+    </form>
+
 </div>
 
 <?php 

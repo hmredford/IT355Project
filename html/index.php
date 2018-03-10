@@ -30,7 +30,7 @@
 <div class="section">
   <h3>Welcome!</h3>
   <p>This is my home page.</p>
-  <p>It sure is something. There isn't much to see right now. <a href="admin.php">Click Here</a> to navigate to the admin site.</p>
+  <p>It sure is something. There isn't much to see right now. <a href="admin/admin.php">Click Here</a> to navigate to the admin site.</p>
 </div>
       <div class="section">
       </div>

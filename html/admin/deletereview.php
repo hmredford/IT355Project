@@ -15,22 +15,20 @@ if(!isset($_SESSION["userid"]))
 
 include("settings.php");
 
-$orderid = $_POST["order"];
-$warehouse = $_POST["warehouse"];
+$review = $_POST["review"];
 
-echo "<br>orderid: " . $orderid;
-echo "<br>warehouse:" . $warehouse;
-
-$add_query = "INSERT INTO shipping (custOrder, warehouseID, status)
-VALUES ($orderid, (SELECT warehouseID FROM warehouse WHERE name='$warehouse'), 'pending')";
+echo "<br>review:" . $review;
 
 
+
+$query = "DELETE FROM review WHERE reviewID=$review";
+
+// Check connection
 if (!$conn) {
     die("Connection failed: " . $conn->connect_error);
 } 
-
-$result = mysqli_query($conn, $add_query);
-
+ echo "<br>" . $query;
+$result = mysqli_query($conn, $query);
 
 if ($result) {
     echo "Record changed successfully";

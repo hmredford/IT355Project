@@ -15,25 +15,26 @@ if(!isset($_SESSION["userid"]))
 
 include("settings.php");
 
-$orderid = $_POST["order"];
-$warehouse = $_POST["warehouse"];
+$name = $_POST["name"];
+$address = $_POST["address"];
+$city = $_POST["city"];
+$state = $_POST["state"];
+$zip = $_POST["zip"];
 
-echo "<br>orderid: " . $orderid;
-echo "<br>warehouse:" . $warehouse;
-
-$add_query = "INSERT INTO shipping (custOrder, warehouseID, status)
-VALUES ($orderid, (SELECT warehouseID FROM warehouse WHERE name='$warehouse'), 'pending')";
-
-
+// Check connection
 if (!$conn) {
     die("Connection failed: " . $conn->connect_error);
 } 
+
+
+$add_query = "INSERT INTO warehouse (name, address, city, state, zip)
+VALUES ('$name', '$address', '$city', '$state', $zip)";
 
 $result = mysqli_query($conn, $add_query);
 
 
 if ($result) {
-    echo "Record changed successfully";
+    echo "New record created successfully";
 } else {
     echo "Error: " . $sql . "<br>" . $conn->error;
 }

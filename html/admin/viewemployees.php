@@ -1,7 +1,21 @@
+<div><table>
+    <tr><td><a href="admin.php"> Admin Home </a></td><td><a href="../logout.php"> log out </a></td></tr>
+</table></div>
 <?php 
+
+session_start();
+//echo session_id();
+
+if(!isset($_SESSION["userid"]))
+{
+  $_SESSION["invalid"] = "Invalid Login. Please try again";
+
+    header("Location: ../login.php");
+}
 include("settings.php");
 
-$warehouseName = $_REQUEST["warehouse"];
+
+$warehouseName = $_POST["warehouse"];
 echo "Employees at " . $warehouseName . "";
 ?>
 <div>
@@ -58,37 +72,6 @@ if (mysqli_num_rows($result) > 0) {
 </table>
 </div>
 
-<div id = "page-back">
-
-    <form action="addemployee.php" method="post">
-    <table>
-    <tr><td colspan=2><h3>Add New Employee</h3></td></tr>
-    <tr><td>firstname:</td> <td><input type="text" name="firstname" /></td></tr>
-    <tr><td>lastname: </td><td><input type="text" name="lastname" /></td></tr>
-    <tr><td>hire date:</td><td> <input type="date" name="hiredate" /></td></tr>
-    <tr><td>phone:</td><td> <input type="number" name="phone"></td></tr>
-    <tr><td>email:</td><td> <input type="text" name="email" /></td></tr>
-    <tr><td>street address: </td><td><input type="text" name="address" /></td></tr>
-    <tr><td>city: </td><td><input type="text" name="city" /></td></tr>
-    <tr><td>state:</td><td> <input type="text" name="state"/></td></tr>
-    <tr><td>zip:</td><td> <input type="number" name="zip" /></td></tr>
-    <tr><td>position:</td><td> <input type="text" name="position" /></td></tr>
-    </table>
-    <select name="warehouse">
-    <?php
-    $sql = "SELECT name FROM warehouse";
-    $result = mysqli_query($conn, $sql);
-    while ($row = mysqli_fetch_assoc($result))
-    {
-        echo "<option value=\"" . $row['name'] . "\">" . $row['name'] . "</option>";
-    }
-    ?>
-    </select>
-    <input type="submit" id="submitaddemployee"/>
-    </form>
-</div>
-
-</div>
 
 <div id="page-back">
     <h3>Update Employee Info</h3>
@@ -122,6 +105,35 @@ if (mysqli_num_rows($result) > 0) {
     </form>
 </div>
 
+<div id = "page-back">
+
+    <form action="addemployee.php" method="post">
+    <table>
+    <tr><td colspan=2><h3>Add New Employee</h3></td></tr>
+    <tr><td>firstname:</td> <td><input type="text" name="firstname" /></td></tr>
+    <tr><td>lastname: </td><td><input type="text" name="lastname" /></td></tr>
+    <tr><td>hire date:</td><td> <input type="date" name="hiredate" /></td></tr>
+    <tr><td>phone:</td><td> <input type="number" name="phone"></td></tr>
+    <tr><td>email:</td><td> <input type="text" name="email" /></td></tr>
+    <tr><td>street address: </td><td><input type="text" name="address" /></td></tr>
+    <tr><td>city: </td><td><input type="text" name="city" /></td></tr>
+    <tr><td>state:</td><td> <input type="text" name="state"/></td></tr>
+    <tr><td>zip:</td><td> <input type="number" name="zip" /></td></tr>
+    <tr><td>position:</td><td> <input type="text" name="position" /></td></tr>
+    </table>
+    <select name="warehouse">
+    <?php
+    $sql = "SELECT name FROM warehouse";
+    $result = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_assoc($result))
+    {
+        echo "<option value=\"" . $row['name'] . "\">" . $row['name'] . "</option>";
+    }
+    ?>
+    </select>
+    <input type="submit" id="submitaddemployee"/>
+    </form>
+</div>
 
 <?php 
 mysqli_close($conn);

@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS game(
 	themes varchar(128) NOT NULL DEFAULT '',
 	designer varchar(128) NOT NULL DEFAULT '',
 	mechanics varchar(255) NOT NULL DEFAULT '',
+	price decimal NOT NULL DEFAULT 5.0;
 	PRIMARY KEY (productID)
 );
 
@@ -31,7 +32,7 @@ CREATE TABLE IF NOT EXISTS customer(
 
 CREATE TABLE IF NOT EXISTS review(
 	reviewID int unsigned NOT NULL AUTO_INCREMENT,
-	rating float(1,1) NOT NULL DEFAULT '3.0',
+	rating decimal(2,1) NOT NULL DEFAULT 3.0,
 	reviewDate timestamp NOT NULL,
 	comment mediumtext NOT NULL DEFAULT '',
 	customerID int unsigned,
@@ -109,11 +110,13 @@ CREATE TABLE IF NOT EXISTS merchOrder(
 	merchOrder int unsigned NOT NULL AUTO_INCREMENT,
 	orderDate timestamp NOT NULL,
 	paymentMethod varchar(255) NOT NULL,
-	paymentTotal float(16,2) NOT NULL,
-	Payment_Date timestamp,
+	paymentTotal decimal NOT NULL,
+	PaymentDate timestamp,
 	employeeID int unsigned NOT NULL,
+	supplierID int unsigned NOT NULL,
 	PRIMARY KEY (merchOrder),
-	FOREIGN KEY (employeeID) REFERENCES employee(employeeID)
+	FOREIGN KEY (employeeID) REFERENCES employee(employeeID),
+	FOREIGN KEY (supplierID) REFERENCES supplier(supplierID)
 );
 
 CREATE TABLE IF NOT EXISTS merchOrderList(
@@ -126,7 +129,7 @@ CREATE TABLE IF NOT EXISTS merchOrderList(
 
 CREATE TABLE IF NOT EXISTS shipping(
 	custOrder int unsigned NOT NULL,
-	warehouseID int unsigned NOT NULL,
+	warehouseID int unsigned,
 	carrierID int unsigned,
 	status varchar(255) NOT NULL DEFAULT 'Pending',
 	FOREIGN KEY (custOrder) REFERENCES custOrder(custOrder),
@@ -151,4 +154,12 @@ CREATE TABLE IF NOT EXISTS inventory(
 	quantity int(2) unsigned NOT NULL DEFAULT 1,
 	FOREIGN KEY (productID) REFERENCES game(productID),
 	FOREIGN KEY (warehouseID) REFERENCES warehouse(warehouseID)
+);
+
+CREATE TABLE IF NOT EXISTS users(
+	userID int unsigned NOT NULL AUTO_INCREMENT,
+	username varchar(255) NOT NULL,
+	password varchar(255) NOT NULL,
+	loggedin int(1) unsigned NOT NULL DEFAULT 0,
+	PRIMARY KEY (userID)
 );
