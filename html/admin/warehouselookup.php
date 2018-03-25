@@ -238,14 +238,14 @@ else {
     <form action="verifyshipment.php" method="post">
     Order:<select name="order">
     <?php
-    $sql5 = "SELECT DISTINCT shipping.custOrder
+    $dsql = "SELECT DISTINCT shipping.custOrder
         FROM shipping
         LEFT JOIN custOrderList ON custOrderList.custOrder=shipping.custOrder
         LEFT JOIN inventory ON custOrderList.productID=inventory.productID
         WHERE shipping.warehouseID=$wid 
         AND inventory.quantity > custOrderList.quantity
         AND shipping.status LIKE'%ending%'";
-    $result7 = mysqli_query($conn, $sql5);
+    $result7 = mysqli_query($conn, $dsql);
     while ($row7 = mysqli_fetch_assoc($result7))
     {
         echo "<option value=\"" . $row7['custOrder'] . "\">" . $row7['custOrder'] . "</option>";
@@ -274,7 +274,7 @@ else {
     <form action="cancel.php" method="post">
     <select name="order">
     <?php
-    $result7 = mysqli_query($conn, $sql7);
+    $result7 = mysqli_query($conn, $sql5);
     while ($row7 = mysqli_fetch_assoc($result7))
     {
         echo "<option value=\"" . $row7['custOrder'] . "\">" . $row7['custOrder'] . "</option>";

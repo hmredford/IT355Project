@@ -161,5 +161,6 @@ CREATE TABLE IF NOT EXISTS users(
 	username varchar(255) NOT NULL,
 	password varchar(255) NOT NULL,
 	loggedin int(1) unsigned NOT NULL DEFAULT 0,
+	admin int(1) unsigned NOT NULL DEFAULT 0,
 	PRIMARY KEY (userID)
 );
