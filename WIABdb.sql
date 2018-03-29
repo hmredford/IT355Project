@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS game(
 CREATE TABLE IF NOT EXISTS customer(
 	customerID int unsigned NOT NULL AUTO_INCREMENT,
 	username varchar(16) NOT NULL,
-	password varchar(32) NOT NULL,
+	password varchar(64) NOT NULL,
 	firstName varchar(16)NOT NULL,
 	lastName varchar(16) NOT NULL,
 	email varchar(255) NOT NULL,

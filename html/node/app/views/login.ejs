@@ -10,10 +10,6 @@
 
         <!-- CSS -->
         <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
-        <link rel="stylesheet" href="/css/form-elements.css">
-        <link rel="stylesheet" href="/css/style.css">
 
     </head>
 
@@ -43,60 +39,31 @@
                         			<i class="fa fa-key"></i>
                         		</div>
                             </div>
-                            <div class="form-bottom">
-                                
-
-                                                <% if (error.length > 0) { %>
-                          <div class="alert alert-danger"><%- error %></div>
-                          <% } %>
-
-                           <% if (success.length > 0) { %>
-                          <div class="alert alert-success"><%- success %></div>
-                          <% } %>
-
                                 
                                 
                                 
-			                    <form role="form" action="/login" role="form" method="post" class="login-form">
+			                    <form action="/login" method="post" class="login-form">
 			                    	<div class="form-group">
-			                    		<label class="sr-only" for="form-username">Email</label>
-			                        	<input type="text" name="email" required  placeholder="Email..." class="form-username form-control" id="email">
+			                    		<label class="sr-only" for="form-username">Username</label>
+			                        	<input type="text" name="user[username]" required  placeholder="Username..." class="form-username form-control" id="fusername">
 			                        </div>
 			                        <div class="form-group">
 			                        	<label class="sr-only" for="form-password">Password</label>
-			                        	<input type="password" required name="password" placeholder="Password..." class="form-password form-control" id="password">
+			                        	<input type="password" required name="user[password]" placeholder="Password..." class="form-password form-control" id="fpassword">
 			                        </div>
-			                        <button type="submit" class="btn">Sign in!</button>
+			                        <input type="submit" value="Sign In">
 			                    </form>
 		                    </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-6 col-sm-offset-3 social-login">
-                        	<h3>...or login with:</h3>
-                        	<div class="social-login-buttons">
-	                        	<a class="btn btn-link-1 btn-link-1-facebook" href="#">
-	                        		<i class="fa fa-facebook"></i> Facebook
-	                        	</a>
-	                        	<a class="btn btn-link-1 btn-link-1-twitter" href="#">
-	                        		<i class="fa fa-twitter"></i> Twitter
-	                        	</a>
-	                        	<a class="btn btn-link-1 btn-link-1-google-plus" href="#">
-	                        		<i class="fa fa-google-plus"></i> Google Plus
-	                        	</a>
-                        	</div>
-                        </div>
-                    </div>
+
                 </div>
+
+                
             </div>
             
         </div>
 
-
-        <!-- Javascript -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-        <script src="/js/scripts.js"></script>
 
     </body>
 
