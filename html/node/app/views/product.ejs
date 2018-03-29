@@ -74,7 +74,14 @@ var game = JSON.parse(sgame);
         </div>
       </td>
       <td>
-            <a href="/addtocart/<%=game[0].productID%>"><button class="w3-button w3-black">Add to Cart <i class="fa fa-shopping-cart"></i></button></a>
+            <form method="post" action="/cart">
+              Quantity: <input type="number" required name="quantity">
+              <input type="hidden" name="pid" value=<%=game[0].productID%>>
+              <input type="hidden" name="pname" value="<%=game[0].name%>">
+              <input type="hidden" name="image" value=<%=game[0].imagePath%>>
+              <input type="hidden" name="price" value=<%=game[0].price%>>
+            <button type="submit" class="w3-button w3-black">Add to Cart <i class="fa fa-shopping-cart"></i></button>
+          </form>
       </td>
     </tr>
     <tr>

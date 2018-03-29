@@ -23,6 +23,7 @@ var now = new Date();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
+//var jsonConcat = require("json-concat");
 
 /***************Mongodb configuratrion********************/
 //var mongoose = require('mongoose');
@@ -37,7 +38,7 @@ var connection = mysql.createConnection({
   user: 'hmredford',
   password: 'hR085757',
   database: 'WIAB'
-})
+});
 
 connection.connect(function(err) {
   if (err) throw err
@@ -95,7 +96,7 @@ console.log('The magic happens on port ' + port);
 
 app.get('/login', function(req, res){
 
-     res.render('login');
+     res.render('login', {message: req.session.message});
   
 });
 app.post('/login', function(req, res) {
@@ -107,19 +108,22 @@ app.post('/login', function(req, res) {
     [req.body.user.username, req.body.user.password], function(err, userID, columns)
   {
     
-      if (err) throw err
+      if (err) {req.session.message = "Invalid Login."; throw err;}
       if (userID.length > 0)
       {
 
        req.session.userinfo = userID[0];
        console.log(req.session);
         console.log("Welcome " + req.session.userinfo.firstName);
-        
+        req.session.message = "Login Successful!";
         res.redirect('/customer');
       }
       else
       {
         console.log("invalid login!");
+        req.session.message = "Invalid Login!";
+        req.session.userinfo = "";
+        console.log(req.session);
         res.redirect('/login');
       }
       
@@ -144,10 +148,11 @@ app.post('/signup', function(req, res) {
      function(err, userID, columns)
   {
     
-      if (err) throw err
+      if (err) {req.session.message = "Failed to create account."; throw err;}
       else
       {
         console.log("signed up!");
+        req.session.message = "Your account is ready to go! please sign in below.";
         res.redirect('/login');
       }
       
@@ -167,29 +172,76 @@ app.get('/customer', function(req, res) {
     res.redirect('/login');
   }
 
+var orderJSON;
+var userJSON;
   connection.query("SElECT * FROM custOrderSummary WHERE customerID=?",[req.session.userinfo.customerID], function(err, orders, columns)
   {
       if (err) throw err
-        var order_string = JSON.stringify(orders);
+      orderJSON = orders;
+    
+    connection.query("SElECT * FROM customer WHERE customerID=?",[req.session.userinfo.customerID], function(err, userdata, columns)
+    {
+       if (err) throw err
+       userJSON = userdata;
+     //console.log("Userdata is" + JSON.stringify(userJSON));
+
+     var dataJSON = JSON.stringify(orderJSON.concat(userJSON));
+    // console.log("JSON is " + dataJSON);
+
+ res.render('customer', {data: dataJSON});
+  
+    });
+
+  });
+
+});
+
+app.post('/editinfo', function(req, res) {
+  
+   connection.query("UPDATE customer SET " + req.body.changeItem + "=? WHERE customerID=? LIMIT 1",
+    [req.body.changeText, req.session.userinfo.customerID],
+     function(err, userID, columns)
+  {
+    
+      if (err) {req.session.message = "Failed to update."; throw err;}
+      else
+      {
+        console.log("record changed!");
+        console.log("req.body");
+        req.session.message = "Your account has been updated";
+        res.redirect('/customer');
+      }
       
-     res.render('customer', {sorders: order_string});
+     
   })
 });
 
 
 
+app.post('/cancel', function(req, res) {
+  
+   connection.query("UPDATE shipping SET status='canceled' WHERE custOrder=? LIMIT 1",
+    [req.body.tocancel],
+     function(err, userID, columns)
+  {
+    
+      if (err) {req.session.message = "Failed to update."; throw err;}
+      else
+      {
+        console.log("order canceled!");
+        req.session.message = "Your account has been updated";
+        res.redirect('/customer');
+      }
+      
+     
+  })
+});
+
+
 
 app.get('/', function(req, res){
 
-  ssn=req.session;
-  if (ssn[0])
-  {
-  console.log("ssn is " + ssn);
-  }
-  else 
-  {
-    console.log("no session");
-  }
+
   connection.query('SElECT productID, name, price, imagePath FROM game', function(err, gamerows, columns)
   {
     
@@ -210,26 +262,151 @@ app.get('/product/:id', function(req, res){
         var game_string = JSON.stringify(gameinfo);
       
      res.render('product', {sgame: game_string});
-  })
+  });
   
 });
 
 
 
 
-app.get('/cart/:pid/', function(req, res){
+app.get('/cart', function(req, res){
+
+if (!req.session || !req.session.userinfo) { // Check if session exists
+    // lookup the user in the DB by pulling their email from the session
+    console.log("not signed in, back to login");
+    res.redirect('/login');
+  }
+  req.session.cart;
+  
+    res.render("cart", {cartdata: JSON.stringify(req.session.cart)});
+ 
+    
+  
+});
 
 
-  connection.query("SElECT * FROM game WHERE productID=" + connection.escape(req.params.id) + "LIMIT 1", function(err, gameinfo, columns)
+app.post('/cart', function(req, res) {
+  if (!req.session || !req.session.userinfo) { // Check if session exists
+    // lookup the user in the DB by pulling their email from the session
+    console.log("not signed in, back to login");
+    res.redirect('/login');
+  }
+
+  console.log(req.body.pid);
+  console.log(req.body.quantity);
+  console.log(req.body.pname);
+  console.log(req.body.image);
+
+  var id = req.body.pid;
+  var quan = req.body.quantity;
+  var name = req.body.pname;
+  var im = req.body.image;
+  var pri = req.body.price;
+
+  if (!req.session.cart)
   {
-      if (err) throw err
-        var game_string = JSON.stringify(gameinfo);
-      
-     res.render('product', {sgame: game_string});
-  })
-  
+    req.session.cart = [];
+  }
+
+  var obj = {pid: id, quantity: quan, name: name, imagePath: im, price: pri};
+  req.session.cart = req.session.cart.concat(obj);
+       console.log("updated cart:" + JSON.stringify(req.session));
+
+       res.render("cart",{cartdata : JSON.stringify(req.session.cart)});
+        
 });
 
+app.post('/removefromcart', function(req, res) {
+  
+      console.log("Wil remove " + req.body.toremove);
+      
+      req.session.cart;
+      if (req.session.cart !== undefined)
+      {
+      
+      req.session.cart = [];
+      
+
+      }
+
+    res.redirect("/cart");
+
+});
+
+app.get('/confirm', function(req, res){
+
+if (!req.session || !req.session.userinfo) { // Check if session exists
+    // lookup the user in the DB by pulling their email from the session
+    console.log("not signed in, back to login");
+    res.redirect('/login');
+  }
+  req.session.cart;
+  req.session.cart.total=req.body.price;
+  
+    res.render("confirm", {cartdata: JSON.stringify(req.session.cart)});
+});
+
+
+app.post('/purchase', function(req, res){
+
+if (!req.session || !req.session.userinfo) { // Check if session exists
+    // lookup the user in the DB by pulling their email from the session
+    console.log("not signed in, back to login");
+    res.redirect('/login');
+  }
+  req.session.cart;
+  req.session.userdata;
+  if (req.session.cart !== undefined)
+  {
+
+
+   var date;
+   date = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    console.log(date);
+
+  var order;
+  //Create Customer Order
+  connection.query("INSERT INTO custOrder(orderDate,paymentMethod,paymentTotal,PaymentDate,customerID) VALUES(?, 'PayPal', ?, ?, ?)",
+  [date, req.body.total, date, req.session.userinfo.customerID],   
+  function(err, result)
+  { if (err) throw err
+    order = result.insertId;
+
+    console.log("working with order : " + order);
+    //Create Shipping Record
+    connection.query("INSERT INTO shipping (custOrder,warehouseID,status) VALUES(?,1,'pending')",
+    [order],   
+    function(err, gameinfo, columns)
+    { if (err) throw err });
+
+    //Create ProductList
+      for (var i = 0; i < req.session.cart.length; i++)
+      {
+        console.log("purchase item: " + JSON.stringify(req.session.cart[i]));
+
+        connection.query("INSERT INTO custOrderList(custOrder,productID, quantity) VALUES(?,?,?)",
+        [order, req.session.cart[i].pid, req.session.cart[i].quantity],
+        function(err, gameinfo, columns)
+        { if (err) throw err });
+
+     }
+
+      if (req.session.cart !== undefined)
+      {
+      
+      req.session.cart = [];
+      
+      }
+  });
+  
+  
+
+  
+  }
+
+    res.redirect("/customer");
+ 
+});
 
 
 //catch 404 and forward to error handler

@@ -16,8 +16,13 @@ body,h1,h2,h3,h4,h5,h6,.w3-wide {font-family: "Montserrat", sans-serif;}
 <body class="w3-content" style="max-width:1200px">
 
 <%
-var orders = JSON.parse(data);
 
+console.log(cartdata);
+var cart=[];
+if(cartdata !== undefined)
+{
+cart = JSON.parse(cartdata);
+}
 %>
 <!-- Sidebar/menu -->
 <nav class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top" style="z-index:3;width:250px" id="mySidebar">
@@ -63,80 +68,42 @@ var orders = JSON.parse(data);
 
   <!-- Product grid -->
   <div class="w3-row">
-    <h2>My Orders</h2>
-    <table border="1px">
-      <tr>
-        <th>Order Number</th>
-        <th>Product</th>
-        <th>Quantity</th>
-        <th>Date</th>
-        <th>Payment Method</th>
-        <th>Total</th>
-        <th>Status</th>
-        <th>Action</th>
-      </tr>
+    <h2>My Cart</h2>
+    <table>
 
-<% for (var i =0; i < orders.length -1; i++) {%>
+<% 
+var total = 0;
+if(cart){ for (var i =0; i < cart.length; i++) {
+total = total + (cart[i].price * cart[i].quantity);
+%>
     <tr>
-      <td><%=orders[i].custOrder %></td>
-      <td><%=orders[i].name %></td>
-      <td><%=orders[i].quantity %></td>
-      <td><%=orders[i].orderDate %></td>
-      <td><%=orders[i].paymentMethod %></td>
-      <td>$ <%=orders[i].paymentTotal %></td>
-      <td><%=orders[i].status %></td>
-      <td><form action="/cancel" method="post">
-        <input type="hidden" name="tocancel" value="<%=orders[i].custOrder %>">
-        <input type="submit" value="Cancel">
+      <td><a href="/product/<%=cart[i].productID%>"><img src="<%=cart[i].imagePath%>" height="100px"></a></td>
+      <td><%=cart[i].productID %></td>
+      <td><%=cart[i].name %></td>
+      <td>x<%=cart[i].quantity %></td>
+      <td>at $<%=cart[i].price %></td>
+
+      <td><form action="/removefromcart" method="post">
+        <input type="hidden" name="toremove" value="<%=cart[i].productID %>">
+        <input type="submit" value="Empty Cart">
       </form>
       </td>
 
     </tr>
 
-    <% } %>
+    <% } }%>
     </table>
-  <% var last = orders.length -1; %>
-  <div class="w3-row">
-    <h2>My info</h2>
-    <table>
-      <tr>
-      <td>Email: <%=orders[last].email %></td>
-      </tr>
-      <tr>
-      <td>Address: <%=orders[last].address %></td>
-      <td><%=orders[last].city %></td>
-      <td><%=orders[last].state %></td>
-      <td><%=orders[last].zip %></td>
+<h2>Cart Total: $<%=total%><h2>
+  </div>
+  <div>
+  <table>
+    <tr>
+      <td><a href="/"><button class="w3-button w3-black">Keep Shopping</button></a></td>
+      <td><a href="/confirm"><button class="w3-button w3-black">Submit Cart</button></a></td>
     </tr>
-    </table>
+  </table>
   </div>
-
-    
-    <div id="page-back">
-    <h3>Update Info</h3>
-    <form action="/editinfo" method="post">
-    
-
-    <select name = "changeItem">
-          
-        <option value="email"> email </option>
-        <option value="address"> address </option>
-        <option value="city"> city </option>
-        <option value="state"> state </option>
-        <option value="zip"> zip </option>
-        
-    </select>
-
-        Change to: <input type="text" name="changeText" />
-    
-    <input type="submit" id="submitemployeeedit"/>
-    </form>
-</div>
-
-
-  </div>
-
-  
+  <br>
   <!-- Subscribe section -->
   <div class="w3-container w3-black w3-padding-32">
     <h1>Subscribe</h1>

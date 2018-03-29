@@ -19,6 +19,7 @@
     "express-session": "^1.15.6",
     "fs-extra": "latest",
     "http-proxy": "latest",
+    "json-concat": "0.0.1",
     "md5": "latest",
     "mime": "latest",
     "mongoose": "latest",
