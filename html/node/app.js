@@ -391,8 +391,6 @@ if (!req.session || !req.session.userinfo) { // Check if session exists
 
      }
 
-      if (req.session.cart !== undefined)
-      {
       
       req.session.cart = [];
       
