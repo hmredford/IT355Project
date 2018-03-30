@@ -33,6 +33,8 @@ cart = JSON.parse(cartdata);
   <div class="w3-padding-64 w3-large w3-text-grey" style="font-weight:bold">
     <a href="/login" class="w3-bar-item w3-button">Login</a>
     <a href="/customer" class="w3-bar-item w3-button">My Profile</a>
+    <a href="/cart" class="w3-bar-item w3-button">My Cart</a>
+    <a href="/logout" class="w3-bar-item w3-button">Logout</a>
   </div>
   <a href="#footer" class="w3-bar-item w3-button w3-padding">Contact</a> 
   <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="document.getElementById('newsletter').style.display='block'">Newsletter</a> 
@@ -61,7 +63,7 @@ cart = JSON.parse(cartdata);
     <h1>My Profile</h1>
     <br>
     <p class="w3-right">
-      <i class="fa fa-shopping-cart w3-margin-right"></i>
+      <a href="/cart"><i class="fa fa-shopping-cart w3-margin-right"></i></a>
       <i class="fa fa-search"></i>
     </p>
   </header>

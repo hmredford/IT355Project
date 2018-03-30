@@ -28,6 +28,8 @@ var orders = JSON.parse(data);
   <div class="w3-padding-64 w3-large w3-text-grey" style="font-weight:bold">
     <a href="/login" class="w3-bar-item w3-button">Login</a>
     <a href="/customer" class="w3-bar-item w3-button">My Profile</a>
+    <a href="/cart" class="w3-bar-item w3-button">My Cart</a>
+    <a href="/logout" class="w3-bar-item w3-button">Logout</a>
   </div>
   <a href="#footer" class="w3-bar-item w3-button w3-padding">Contact</a> 
   <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="document.getElementById('newsletter').style.display='block'">Newsletter</a> 
@@ -56,11 +58,15 @@ var orders = JSON.parse(data);
     <h1>My Profile</h1>
     <br>
     <p class="w3-right">
-      <i class="fa fa-shopping-cart w3-margin-right"></i>
+      <a href="/cart"><i class="fa fa-shopping-cart w3-margin-right"></i></a>
       <i class="fa fa-search"></i>
+      <div>
+    <br>
+    <a href="/"><button class="w3-button w3-black">Browse Games</button></a> 
+    <br>
+</div>
     </p>
   </header>
-
   <!-- Product grid -->
   <div class="w3-row">
     <h2>My Orders</h2>
@@ -131,6 +137,7 @@ var orders = JSON.parse(data);
     
     <input type="submit" id="submitemployeeedit"/>
     </form>
+
 </div>
 
 
@@ -158,7 +165,9 @@ var orders = JSON.parse(data);
           <p><input class="w3-input w3-border" type="text" placeholder="Message" name="Message" required></p>
           <button type="submit" class="w3-button w3-block w3-black">Send</button>
         </form>
+
       </div>
+
 
       <div class="w3-col s4">
         <h4>About</h4>

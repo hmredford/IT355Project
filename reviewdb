@@ -1,0 +1,35 @@
+use wiab
+
+db.createCollection("reviews", { autoIndexId : true } )
+
+db.reviews.insert({
+   game: '7 Wonders', 
+   description: 'Fun and educational',
+   customer: 2,
+   rating: 4.5,
+   likes: 3
+})
+
+db.reviews.insert({
+   game: 'The Resistance', 
+   description: 'Fun with the right crowd',
+   customer: 3,
+   rating: 3.5,
+   likes: 7
+})
+
+db.reviews.insert({
+   game: 'Catan', 
+   description: 'Great game, but takes an hour or so to play.',
+   customer: 1,
+   rating: 4,
+   likes: 3
+})
+
+db.reviews.insert({
+   game: 'Ticket to Ride', 
+   description: 'Calm yet stressful at the same time. Great game.',
+   customer: 3,
+   rating: 5,
+   likes: 10
+})

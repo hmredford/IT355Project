@@ -1,0 +1,33 @@
+CREATE TRIGGER populateOrderTotal AFTER INSERT ON custOrderList FOR EACH ROW
+ 	UPDATE custOrder
+ 	JOIN custOrderList ON custOrder.custOrder = custOrderList.custOrder
+ 	JOIN game ON custOrderList.productID = game.productID 
+ 	SET paymentTotal = custOrderList.quantity * game.price;
+
+
+
+
+
+CREATE VIEW custOrderSummary AS 
+	SELECT custOrder.custOrder, custOrder.customerID, customer.firstName, customer.lastName, game.name, custOrderList.quantity, orderDate, paymentMethod, paymentTotal, paymentDate, status
+	FROM custOrder
+	RIGHT JOIN custOrderList 
+	ON custOrder.custOrder = custOrderList.custOrder
+	RIGHT JOIN game
+	ON game.productID = custOrderList.productID
+	RIGHT JOIN customer
+	ON custOrder.customerID = customer.customerID
+	RIGHT JOIN shipping
+	ON custOrder.custOrder = shipping.custOrder
+	GROUP BY custOrder.custOrder
+	ORDER BY orderDate DESC;
+
+
+
+	Stored Proceedure: 
+	
+	(Assuming there is a fixed rate for all acounts)
+
+CREATE PROCEDURE apply_sale(IN percent DECIMAL)
+	UPDATE game
+	SET price = price * percent;

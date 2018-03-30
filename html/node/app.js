@@ -42,7 +42,7 @@ var connection = mysql.createConnection({
 
 connection.connect(function(err) {
   if (err) throw err
-  console.log('You are now connected...')
+  console.log('You are now connected to mysql...')
       
 
       connection.query('SElECT * FROM game', function(err, rows, columns)
@@ -56,7 +56,20 @@ connection.connect(function(err) {
       })
 }) 
 
+var mongo = require('mongodb')
+var sanitize = require('mongo-sanitize');
 
+var MongoClient = mongo.MongoClient;
+var database = undefined;
+var dbUrl = 'mongodb://127.0.0.1:27017/wiab';
+MongoClient.connect(dbUrl, function(err, db) {
+  if (err) {
+    throw err;
+  } else {
+    database = db;
+    console.log('MongoDB connection successful!');
+}
+});
 
 
 //require('./config/passport')(passport); // pass passport for configuration
@@ -74,8 +87,8 @@ app.set('view engine', 'ejs'); // set up ejs for templating
 
 
 //required for passport
-app.use(session({cookieName:'session', secret: 'butteredbannanatoast', 
-  resave: true, saveUninitialized: true, duration: 30 * 60 * 1000,
+app.use(session({name:'session', secret: 'friedbuttered5bannanatoast', 
+  resave: false, saveUninitialized: true, duration: 30 * 60 * 1000,
   activeDuration: 5 * 60 * 1000, })); // session secret
 
 var ssn;
@@ -131,6 +144,12 @@ app.post('/login', function(req, res) {
   })
 });
 
+app.get('/logout', function(req, res){
+    req.session.destroy();
+    console.log(req.session);
+     res.render('login', {message: "Logout successful"});
+  
+});
 
 
 
@@ -266,6 +285,67 @@ app.get('/product/:id', function(req, res){
   
 });
 
+app.get('/review/:id', function(req, res){
+  if (!req.session || !req.session.userinfo) { // Check if session exists
+    // lookup the user in the DB by pulling their email from the session
+    console.log("not signed in, back to login");
+    res.redirect('/login');
+  }
+  var name=[]; 
+  connection.query("SElECT name FROM game WHERE productID=" + connection.escape(req.params.id) + "LIMIT 1", function(err, gameinfo, columns)
+  {
+      if (err) throw err
+        name = {name: gameinfo[0].name};
+
+        console.log("game name from query: " + name);
+
+       MongoClient.connect(dbUrl, function(err, database) {
+  
+        var wiab = database.db('wiab');
+        var reviews = wiab.collection('reviews');
+       reviews.find({game: name.name}).toArray(function(err, result) {
+          if (err) throw err;
+          var rev = result;
+
+          rev = rev.concat(name);
+
+          console.log("Reviews for game: " + JSON.stringify(rev));
+
+
+          res.render('review', {reviews: JSON.stringify(rev)});
+          });
+
+       });
+  });
+  
+});
+
+app.post('/addreview', function(req, res) {
+  if (!req.session || !req.session.userinfo) { // Check if session exists
+    // lookup the user in the DB by pulling their email from the session
+    console.log("not signed in, back to login");
+    res.redirect('/login');
+  }
+  
+   var mongoq = MongoClient.connect(dbUrl, function(err, database) {
+  
+        var wiab = database.db('wiab');
+        var reviews = wiab.collection('reviews');
+       reviews.insertOne({game: sanitize(req.body.review.game), 
+        description: sanitize(req.body.review.description),
+         customer: sanitize(req.session.userinfo.customerID),
+          rating: sanitize(req.body.review.rating),
+           likes:0 }, function(err, result) {
+          if (err) throw err;
+          console.log("Review added");
+
+
+          res.redirect('/');
+          });
+
+       });
+});
+
 
 
 
@@ -354,6 +434,7 @@ if (!req.session || !req.session.userinfo) { // Check if session exists
     console.log("not signed in, back to login");
     res.redirect('/login');
   }
+
   req.session.cart;
   req.session.userdata;
   if (req.session.cart !== undefined)
@@ -364,13 +445,13 @@ if (!req.session || !req.session.userinfo) { // Check if session exists
    date = new Date().toISOString().slice(0, 19).replace('T', ' ');
     console.log(date);
 
-  var order;
+
   //Create Customer Order
   connection.query("INSERT INTO custOrder(orderDate,paymentMethod,paymentTotal,PaymentDate,customerID) VALUES(?, 'PayPal', ?, ?, ?)",
   [date, req.body.total, date, req.session.userinfo.customerID],   
   function(err, result)
   { if (err) throw err
-    order = result.insertId;
+    var order = result.insertId; 
 
     console.log("working with order : " + order);
     //Create Shipping Record
@@ -378,7 +459,7 @@ if (!req.session || !req.session.userinfo) { // Check if session exists
     [order],   
     function(err, gameinfo, columns)
     { if (err) throw err });
-
+    
     //Create ProductList
       for (var i = 0; i < req.session.cart.length; i++)
       {
@@ -390,19 +471,13 @@ if (!req.session || !req.session.userinfo) { // Check if session exists
         { if (err) throw err });
 
      }
-
-      
-      req.session.cart = [];
-      
-      }
+      delete req.session["cart"];
+  
   });
-  
-  
 
-  
   }
 
-    res.redirect("/customer");
+    res.redirect("/cart");
  
 });
 
