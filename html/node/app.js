@@ -161,7 +161,7 @@ app.get('/signup', function(req, res){
 
 app.post('/signup', function(req, res) {
   
-   connection.query("INSERT INTO customer (username, password, firstName,lastName, email, address, city, state, zip) VALUES(?,?,?,?,?,?,?,?,?)",
+   connection.query("INSERT INTO customer (username, password, firstName,lastName, email, address, city, state, zip) VALUES(?,SHA2(?,256),?,?,?,?,?,?,?)",
     [req.body.newuser.username, req.body.newuser.password, req.body.newuser.firstName,req.body.newuser.lastName, 
     req.body.newuser.email, req.body.newuser.address, req.body.newuser.city, req.body.newuser.state, req.body.newuser.zip],
      function(err, userID, columns)
