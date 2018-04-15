@@ -23,7 +23,7 @@ if(!isset($_SESSION["userid"]))
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>DBA mysql</title>
+  <title>DBA Mongo</title>
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -34,13 +34,13 @@ if(!isset($_SESSION["userid"]))
 </table></div>
 
 <div id="page-back">
-	<h1>MySQL Info</h1>
+	<h1>Mongo Info</h1>
 
-	<h3>Backup WIAB database</h3>
-	<a href = "mysqlbackup.php"><button>Back Up Now</button></a>
+	<h3>Backup Mongo database</h3>
+	<a href = "mongobackup.php"><button>Back Up Now</button></a>
 	<?php 
 
-	$output = shell_exec('/usr/bin/python script/mysqlinfo.py');
+	$output = shell_exec('/usr/bin/python script/mongoinfo.py');
 	echo $output;
 
 

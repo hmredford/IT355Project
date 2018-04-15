@@ -26,8 +26,18 @@ CREATE VIEW custOrderSummary AS
 
 	Stored Proceedure: 
 	
-	(Assuming there is a fixed rate for all acounts)
+	select * products from a custOrder
 
-CREATE PROCEDURE apply_sale(IN percent DECIMAL)
-	UPDATE game
-	SET price = price * percent;
+
+CREATE PROCEDURE viewMerchOrders()
+	SELECT merchOrder.merchOrder, merchOrder.employeeID, employee.firstName,employee.lastName, game.name, merchOrderList.quantity, orderDate, paymentMethod, paymentTotal, paymentDate, status
+	FROM merchOrder
+	RIGHT JOIN merchOrderList 
+	ON merchOrder.merchOrder = merchOrderList.merchOrder
+	RIGHT JOIN game
+	ON game.productID = merchOrderList.productID
+	RIGHT JOIN employee
+	ON merchOrder.employeeID = employee.employeeID
+	RIGHT JOIN receiving
+	ON merchOrder.merchOrder = receiving.merchOrder
+	ORDER BY orderDate DESC;
