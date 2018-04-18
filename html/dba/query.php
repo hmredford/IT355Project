@@ -2,7 +2,7 @@
 
 session_start();
 //echo session_id();
-include("admin/settings.php");
+include("settings.php");
 
 //POST variable
 
@@ -51,7 +51,7 @@ $result = mysqli_query($conn, $userid_query);
 	
 	//mysqli_close($db_conn);
 
-	header("Location: admin/admin.php");
+	header("Location: dba.php");
 
 
   

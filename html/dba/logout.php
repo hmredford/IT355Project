@@ -3,7 +3,7 @@ session_start();
 //echo session_id();
 
 //$_SESSION["query"] = 1;
-include "admin/settings.php";
+include "settings.php";
 //$_SESSION["query"] = 0;
 
 

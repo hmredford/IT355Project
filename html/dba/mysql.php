@@ -1,4 +1,4 @@
-<?
+<?php
 
 include "settings.php";
 //VERIFY LOGIN
@@ -15,7 +15,7 @@ if(!isset($_SESSION["userid"]))
 {
   $_SESSION["invalid"] = "Invalid Login. Please try again";
 
-    redirect("../login.php");
+    redirect("login.php");
 }
 
 ?>
@@ -30,7 +30,7 @@ if(!isset($_SESSION["userid"]))
 </head>
 <body>
 <div><table>
-	<tr><td><a href="dba.php"> DBA Home </a></td><td><a href="../logout.php"> log out </a></td></tr>
+	<tr><td><a href="dba.php"> DBA Home </a></td><td><a href="logout.php"> log out </a></td></tr>
 </table></div>
 
 <div id="page-back">
@@ -40,8 +40,9 @@ if(!isset($_SESSION["userid"]))
 	<a href = "mysqlbackup.php"><button>Back Up Now</button></a>
 	<?php 
 
-	$output = shell_exec('/usr/bin/python script/mysqlinfo.py');
-	echo $output;
+	//$output = shell_exec('/usr/bin/python script/mysqlinfo.py');
+	$output = `python script/mysqlinfo.py`;
+  echo $output;
 
 
 	?>

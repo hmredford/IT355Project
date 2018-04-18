@@ -1,5 +1,5 @@
 import os
-os.system('/usr/bin/mysqldump -u hmredford --password="hR085757" WIAB > ../dbbackup/WIAB.sql')
+os.system('sudo /usr/bin/mysqldump -u hmredford --password="hR085757" WIAB > ../dbbackup/WIAB.sql')
 
 print "Backing up WIAB Database ....<br>"
 
