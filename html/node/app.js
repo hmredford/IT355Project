@@ -48,11 +48,11 @@ connection.connect(function(err) {
       connection.query('SElECT * FROM game', function(err, rows, columns)
       {
         if (err) throw err
-          for (i = 0; i < rows.length; i++) { 
+        //  for (i = 0; i < rows.length; i++) { 
 
-          console.log(rows[i].name);
+          //console.log(rows[i].name);
       
-      }
+      //}
       })
 }) 
 
@@ -113,9 +113,9 @@ app.get('/login', function(req, res){
   
 });
 app.post('/login', function(req, res) {
-  console.log(req.body.user.username);
-  console.log(req.body.user.password);
-  console.log(req.session);
+  //console.log(req.body.user.username);
+  //console.log(req.body.user.password);
+  //console.log(req.session);
 
    connection.query("SElECT customerID, username, firstName, lastName FROM customer WHERE username=? AND password=SHA2(?, 256) LIMIT 1",
     [req.body.user.username, req.body.user.password], function(err, userID, columns)
@@ -126,17 +126,17 @@ app.post('/login', function(req, res) {
       {
 
        req.session.userinfo = userID[0];
-       console.log(req.session);
-        console.log("Welcome " + req.session.userinfo.firstName);
+       //console.log(req.session);
+        //console.log("Welcome " + req.session.userinfo.firstName);
         req.session.message = "Login Successful!";
         res.redirect('/customer');
       }
       else
       {
-        console.log("invalid login!");
+        //console.log("invalid login!");
         req.session.message = "Invalid Login!";
         req.session.userinfo = "";
-        console.log(req.session);
+        //console.log(req.session);
         res.redirect('/login');
       }
       
@@ -146,7 +146,7 @@ app.post('/login', function(req, res) {
 
 app.get('/logout', function(req, res){
     req.session.destroy();
-    console.log(req.session);
+    //console.log(req.session);
      res.render('login', {message: "Logout successful"});
   
 });
@@ -161,7 +161,7 @@ app.get('/signup', function(req, res){
 
 app.post('/signup', function(req, res) {
   
-   connection.query("INSERT INTO customer (username, password, firstName,lastName, email, address, city, state, zip) VALUES(?,SHA2(?,256),?,?,?,?,?,?,?)",
+   connection.query("INSERT INTO customer (username, password, firstName,lastName, email, address, city, state, zip) VALUES(?,?,?,?,?,?,?,?,?)",
     [req.body.newuser.username, req.body.newuser.password, req.body.newuser.firstName,req.body.newuser.lastName, 
     req.body.newuser.email, req.body.newuser.address, req.body.newuser.city, req.body.newuser.state, req.body.newuser.zip],
      function(err, userID, columns)
@@ -170,7 +170,7 @@ app.post('/signup', function(req, res) {
       if (err) {req.session.message = "Failed to create account."; throw err;}
       else
       {
-        console.log("signed up!");
+        //console.log("signed up!");
         req.session.message = "Your account is ready to go! please sign in below.";
         res.redirect('/login');
       }
@@ -187,7 +187,7 @@ app.post('/signup', function(req, res) {
 app.get('/customer', function(req, res) {
   if (!req.session || !req.session.userinfo) { // Check if session exists
     // lookup the user in the DB by pulling their email from the session
-    console.log("not signed in, back to login");
+    //console.log("not signed in, back to login");
     res.redirect('/login');
   }
 
@@ -225,8 +225,8 @@ app.post('/editinfo', function(req, res) {
       if (err) {req.session.message = "Failed to update."; throw err;}
       else
       {
-        console.log("record changed!");
-        console.log("req.body");
+        //console.log("record changed!");
+        //console.log("req.body");
         req.session.message = "Your account has been updated";
         res.redirect('/customer');
       }
@@ -247,7 +247,7 @@ app.post('/cancel', function(req, res) {
       if (err) {req.session.message = "Failed to update."; throw err;}
       else
       {
-        console.log("order canceled!");
+        //console.log("order canceled!");
         req.session.message = "Your account has been updated";
         res.redirect('/customer');
       }
@@ -288,7 +288,7 @@ app.get('/product/:id', function(req, res){
 app.get('/review/:id', function(req, res){
   if (!req.session || !req.session.userinfo) { // Check if session exists
     // lookup the user in the DB by pulling their email from the session
-    console.log("not signed in, back to login");
+    //console.log("not signed in, back to login");
     res.redirect('/login');
   }
   var name=[]; 
@@ -297,7 +297,7 @@ app.get('/review/:id', function(req, res){
       if (err) throw err
         name = {name: gameinfo[0].name};
 
-        console.log("game name from query: " + name);
+        //console.log("game name from query: " + name);
 
        MongoClient.connect(dbUrl, function(err, database) {
   
@@ -309,7 +309,7 @@ app.get('/review/:id', function(req, res){
 
           rev = rev.concat(name);
 
-          console.log("Reviews for game: " + JSON.stringify(rev));
+          //console.log("Reviews for game: " + JSON.stringify(rev));
 
 
           res.render('review', {reviews: JSON.stringify(rev)});
@@ -323,7 +323,7 @@ app.get('/review/:id', function(req, res){
 app.post('/addreview', function(req, res) {
   if (!req.session || !req.session.userinfo) { // Check if session exists
     // lookup the user in the DB by pulling their email from the session
-    console.log("not signed in, back to login");
+    //console.log("not signed in, back to login");
     res.redirect('/login');
   }
   
@@ -353,7 +353,7 @@ app.get('/cart', function(req, res){
 
 if (!req.session || !req.session.userinfo) { // Check if session exists
     // lookup the user in the DB by pulling their email from the session
-    console.log("not signed in, back to login");
+    //console.log("not signed in, back to login");
     res.redirect('/login');
   }
   req.session.cart;
@@ -368,14 +368,14 @@ if (!req.session || !req.session.userinfo) { // Check if session exists
 app.post('/cart', function(req, res) {
   if (!req.session || !req.session.userinfo) { // Check if session exists
     // lookup the user in the DB by pulling their email from the session
-    console.log("not signed in, back to login");
+    //console.log("not signed in, back to login");
     res.redirect('/login');
   }
 
-  console.log(req.body.pid);
-  console.log(req.body.quantity);
-  console.log(req.body.pname);
-  console.log(req.body.image);
+  //console.log(req.body.pid);
+  //console.log(req.body.quantity);
+  //console.log(req.body.pname);
+  //console.log(req.body.image);
 
   var id = req.body.pid;
   var quan = req.body.quantity;
@@ -390,7 +390,7 @@ app.post('/cart', function(req, res) {
 
   var obj = {pid: id, quantity: quan, name: name, imagePath: im, price: pri};
   req.session.cart = req.session.cart.concat(obj);
-       console.log("updated cart:" + JSON.stringify(req.session));
+       //console.log("updated cart:" + JSON.stringify(req.session));
 
        res.render("cart",{cartdata : JSON.stringify(req.session.cart)});
         
@@ -398,7 +398,7 @@ app.post('/cart', function(req, res) {
 
 app.post('/removefromcart', function(req, res) {
   
-      console.log("Wil remove " + req.body.toremove);
+      //console.log("Wil remove " + req.body.toremove);
       
       req.session.cart;
       if (req.session.cart !== undefined)
@@ -417,7 +417,7 @@ app.get('/confirm', function(req, res){
 
 if (!req.session || !req.session.userinfo) { // Check if session exists
     // lookup the user in the DB by pulling their email from the session
-    console.log("not signed in, back to login");
+    //console.log("not signed in, back to login");
     res.redirect('/login');
   }
   req.session.cart;
@@ -431,7 +431,7 @@ app.post('/purchase', function(req, res){
 
 if (!req.session || !req.session.userinfo) { // Check if session exists
     // lookup the user in the DB by pulling their email from the session
-    console.log("not signed in, back to login");
+    //console.log("not signed in, back to login");
     res.redirect('/login');
   }
 
@@ -443,7 +443,7 @@ if (!req.session || !req.session.userinfo) { // Check if session exists
 
    var date;
    date = new Date().toISOString().slice(0, 19).replace('T', ' ');
-    console.log(date);
+    //console.log(date);
 
 
   //Create Customer Order
@@ -453,7 +453,7 @@ if (!req.session || !req.session.userinfo) { // Check if session exists
   { if (err) throw err
     var order = result.insertId; 
 
-    console.log("working with order : " + order);
+    //console.log("working with order : " + order);
     //Create Shipping Record
     connection.query("INSERT INTO shipping (custOrder,warehouseID,status) VALUES(?,1,'pending')",
     [order],   
@@ -463,7 +463,7 @@ if (!req.session || !req.session.userinfo) { // Check if session exists
     //Create ProductList
       for (var i = 0; i < req.session.cart.length; i++)
       {
-        console.log("purchase item: " + JSON.stringify(req.session.cart[i]));
+        //console.log("purchase item: " + JSON.stringify(req.session.cart[i]));
 
         connection.query("INSERT INTO custOrderList(custOrder,productID, quantity) VALUES(?,?,?)",
         [order, req.session.cart[i].pid, req.session.cart[i].quantity],
