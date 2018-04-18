@@ -3,8 +3,12 @@
 import MySQLdb
 
 # connect to the database
-db = MySQLdb.connect("localhost","hmredford","hR085757","WIAB" )
+print "<h3>Database Connection Status:</h3>"
 
+try:
+	db = MySQLdb.connect("localhost","hmredford","hR085757","WIAB" )
+except:
+	print "<p style='color:red;'>Not Connected</p>"
 # setup a cursor object using cursor() method
 cursor = db.cursor()
 
@@ -14,12 +18,9 @@ uptime = cursor.fetchone()
 
 # begin printing data to the screen
 
-print "<h3>Database Connection Status:</h3>"
 
-if db:
-	print "<p style='color:green;'>Connected; uptime since page load: %s </p>" % str(uptime)
-else:
-	print "<p style='color:red;'>Connected</p>"
+print "<p style='color:green;'>Connected; uptime since page load: %s </p>" % str(uptime)
+	
 
 # run a query
 cursor.execute("SELECT VERSION()")
